@@ -1,5 +1,26 @@
+local zoneBlips = {}
 local carftingPointBlips = {}
 local tableBlips = {}
+
+local function calculateCenterPoint(coords)
+    -- Initialize variables
+    local avgX = 0
+    local avgY = 0
+    local numCoords = #coords
+
+    -- Iterate through coordinates and accumulate sums
+    for i = 1, numCoords do
+        avgX = avgX + coords[i].x
+        avgY = avgY + coords[i].y
+    end
+
+    -- Calculate averages
+    avgX = avgX / numCoords
+    avgY = avgY / numCoords
+
+    -- Create and return center point vector2
+    return vector2(avgX, avgY)
+end
 
 local function AddTableBlip(blipData)
     if blipData.display then
@@ -17,6 +38,24 @@ local function AddTableBlip(blipData)
 end
 
 CreateThread(function()
+
+    for _, v in pairs(Config.Zones) do
+        if v.blip.display then
+            local center = calculateCenterPoint(v.points)
+
+            local blip = AddBlipForCoord(center.x, center.y, 200)
+            SetBlipSprite(blip, v.blip.sprite)
+            SetBlipDisplay(blip, 4)
+            SetBlipScale(blip, 0.8)
+            SetBlipColour(blip, v.blip.displayColor)
+            SetBlipAsShortRange(blip, true)
+            BeginTextCommandSetBlipName("STRING")
+            AddTextComponentString(v.blip.displayText)
+            EndTextCommandSetBlipName(blip)
+            table.insert(zoneBlips, blip)
+        end
+    end
+
     for _, pointData in pairs(Config.CraftingPoints) do
         if pointData.blip.display then
             local blip = AddBlipForCoord(pointData.coords.x, pointData.coords.y, pointData.coords.z)
@@ -77,6 +116,9 @@ end)
 -- Remove Blips on Resource Stop
 AddEventHandler('onResourceStop', function(resource)
     if resource == GetCurrentResourceName() then
+        for _, v in pairs(zoneBlips) do
+            RemoveBlip(v)
+        end
         for _, v in pairs(carftingPointBlips) do
             RemoveBlip(v)
         end

@@ -104,7 +104,7 @@ lib.callback.register('it-crafting:server:getTableByOwner', function(source)
         end
     end
 
-    if #temp == 0 then
+    if next(temp) then
         if Config.Debug then lib.print.error('[getTableByOwner] - Table with Owner:', source, 'not found') end
         return nil
     end

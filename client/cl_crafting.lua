@@ -1,7 +1,20 @@
-local tablePlacing = false
 local crafting = false
 
+local tableZones = {}
 local processingFx = {}
+
+for k, v in pairs(Config.Zones) do
+    local coords = {}
+    for _, point in ipairs(v.points) do
+        table.insert(coords, vector3(point.x, point.y, point.z))
+    end
+
+    tableZones[k] = lib.zones.poly({
+        points = coords,
+        thickness = v.thickness,
+        debug = Config.DebugPoly,
+    })
+end
 
 local RotationToDirection = function(rot)
     local rotZ = math.rad(rot.z)
@@ -21,8 +34,76 @@ local RayCastCamera = function(dist)
     return hit, endPos, entityHit, surfaceNormal
 end
 
+local function checkforZones(coords, targetZones)
+    if not targetZones or #targetZones == 0 then return nil end
+    for _, targetZone in pairs(targetZones) do
+        for id, zone in pairs(tableZones) do
+            if zone:contains(vector3(coords.x, coords.y, coords.z)) then
+                if id == targetZone then
+                    return id
+                end
+            end
+        end      
+    end
+    return nil
+end
+
 
 local placeCraftingTable = function(ped, tableItem, coords, rotation, metadata)
+
+    local extendedItemData = Config.CraftingTables[tableItem]
+    if not extendedItemData then
+        if Config.Debug then lib.print.error('[placeCraftingTable | Debug] Invalid tableItem:', tableItem) end
+        return
+    end
+
+    local tables = lib.callback.await('it-crafting:server:getTables', false)
+
+    if tables then
+        for _, table in pairs(tables) do
+            local tableCoords = table.coords
+            local distance = #(coords - tableCoords)
+            if distance <= Config.MinDistanceToTable then
+                ShowNotification(nil, _U('NOTIFICATION__TO__CLOSE'), 'error')
+                TriggerEvent('it-crafting:client:syncRestLoop', false)
+                if it.inventory == 'ox' then
+                    it.giveItem(tableItem, 1, metadata)
+                end
+                return
+            end
+        end
+    end
+
+    local playerTables = lib.callback.await('it-crafting:server:getTableByOwner', false)
+    if Config.PlayerTableLimit ~= -1 and playerTables then
+
+        local playerTableCount = 0
+        for _, table in pairs(playerTables) do
+            if table.owner == it.getCitizenId() then
+                playerTableCount = playerTableCount + 1
+            end
+        end
+
+        if playerTableCount >= Config.PlayerTableLimit then
+            ShowNotification(nil, _U('NOTIFICATION__MAX__TABLES'), 'error')
+            TriggerEvent('it-crafting:client:syncRestLoop', false)
+            if it.inventory == 'ox' then
+                it.giveItem(tableItem, 1, metadata)
+            end
+            return
+        end
+    end
+
+    local targetZone = checkforZones(coords, extendedItemData.restricCrafting['zones'])
+    if not targetZone then
+        ShowNotification(nil, _U('NOTIFICATION__NOT__ALLOWED'), 'error')
+        TriggerEvent('it-crafting:client:syncRestLoop', false)
+        if it.inventory == 'ox' then
+            it.giveItem(tableItem, 1, metadata)
+        end
+        return
+    end
+
     RequestAnimDict('amb@medic@standing@kneel@base')
     RequestAnimDict('anim@gangops@facility@servers@bodysearch@')
     while 
@@ -36,7 +117,7 @@ local placeCraftingTable = function(ped, tableItem, coords, rotation, metadata)
     TaskPlayAnim(ped, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, 8.0, -1, 48, 0, false, false, false)
 
 
-    if lib.progressBar({
+    if ShowProgressBar({
         duration = 5000,
         label = _U('PROGRESSBAR__PLACE__TABLE'),
         useWhileDead = false,

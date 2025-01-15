@@ -23,20 +23,6 @@ RegisterNetEvent('it-crafting:client:showRecipesMenu', function(type, data)
         })
     end
 
-    if type == 'table' then
-        table.insert(options, {
-            title = _U('MENU__TABLE__REMOVE'),
-            icon = "ban",
-            description = _U('MENU__TABLE__REMOVE__DESC'),
-            arrow = true,
-            onSelect = function(_)
-                TriggerEvent('it-crafting:client:removeTable', {tableId = tableId})
-            end,
-        })
-    end
-
-    lib.print.info('Showing recipes menu II')
-
     lib.registerContext({
         id = "it-crafting-recipes-menu",
         title = _U('MENU__PROCESSING'),

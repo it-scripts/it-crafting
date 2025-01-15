@@ -91,10 +91,9 @@ end)
 
 lib.callback.register('it-crafting:server:getTableByOwner', function(source)
 
-    if Config.Debug then lib.print.info('[getTableByOwner] - Try to get Table with Owner:', source) end
-
     local src = source
     local citId = it.getCitizenId(src)
+    if Config.Debug then lib.print.info('[getTableByOwner] - Try to get Table with Owner:', citId) end
 
     local temp = {}
 

@@ -1,5 +1,5 @@
 function it.hasItem(itemName, amount)
-    local hasItem = lib.callback.await('it-lib:hasItem', false, itemName, amount)
+    local hasItem = lib.callback.await('it-crafting:hasItem', false, itemName, amount)
     return hasItem
 end
 
@@ -25,7 +25,7 @@ function it.getItemLabel(itemName)
     end
 
     if it.inventory == 'origen' or it.inventory == 'codem' then
-        return lib.callback.await('it-lib:server:getItemLabel', false, itemName)
+        return lib.callback.await('it-crafting:server:getItemLabel', false, itemName)
     end
     if it.core == 'qb-core' then
         local item = CoreObject.Shared.Items[itemName]
@@ -34,7 +34,7 @@ function it.getItemLabel(itemName)
         end
     end
     if it.core == 'esx' then
-        itemLabel = lib.callback.await('it-lib:server:getItemLabel', false, itemName)
+        itemLabel = lib.callback.await('it-crafting:server:getItemLabel', false, itemName)
     end
     if not itemLabel then
         lib.print.error('[bridge | getItemLabel] Unable to find item labe for the item: ' .. itemName)
@@ -43,16 +43,21 @@ function it.getItemLabel(itemName)
     return itemLabel or itemName
 end
 
-lib.callback.register('it-lib:client:getItemLabel', function(itemName)
+function it.canCarryItem(itemName, amount)
+    local canCarry = lib.callback.await('it-crafting:canCarryItem', false, itemName, amount)
+    return canCarry
+end
+
+lib.callback.register('it-crafting:client:getItemLabel', function(itemName)
     local items = exports.ox_inventory:Items()
     return items[itemName].label
 end)
 
 function it.getItemCount(itemName)
-    local itemCount = lib.callback.await('it-lib:getItemCount', false, itemName)
+    local itemCount = lib.callback.await('it-crafting:getItemCount', false, itemName)
     return itemCount
 end
 
 function it.toggleItem(toggle, name, amount, metadata)
-    TriggerServerEvent('it-lib:toggleItem', toggle, name, amount, metadata)
+    TriggerServerEvent('it-crafting:toggleItem', toggle, name, amount, metadata)
 end

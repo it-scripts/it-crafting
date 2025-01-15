@@ -95,7 +95,7 @@ local placeCraftingTable = function(ped, tableItem, coords, rotation, metadata)
     end
 
     local targetZone = checkforZones(coords, extendedItemData.restricCrafting['zones'])
-    if not targetZone then
+    if targetZone then
         ShowNotification(nil, _U('NOTIFICATION__NOT__ALLOWED'), 'error')
         TriggerEvent('it-crafting:client:syncRestLoop', false)
         if it.inventory == 'ox' then
@@ -262,13 +262,6 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
     else
         lib.print.error('Invalid craftingType:', craftingType)
         return
-    end
-
-    if extendedCraftingData.restricCrafting.onlyOwner and craftingType == 'table' then
-        if craftingData.owner ~= it.getCitizenId() then
-            ShowNotification(nil, _U('NOTIFICATION__NOT__OWNER'), 'error')
-            return
-        end
     end
 
     local input = lib.inputDialog(_U('INPUT__AMOUNT__HEADER'), {

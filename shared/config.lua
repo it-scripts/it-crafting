@@ -40,8 +40,10 @@ Config.Language = 'en' -- Choose your language from the locales folder
     You can also set the player plant limit, this is the maximum amount of plants a player can have simultaneously.
 ]]
 Config.rayCastingDistance = 7.0 -- distance in meters
+-- TODO: IMPLEMENT THE WEIGHT CHECKS!
 Config.UseWeightSystem = false -- Set to true to use the weight system
 Config.PlayerTableLimit = 3 -- Maximum amount of tables a player can have
+Config.MinDistanceToTable = 3.0 -- Minimum distance to a table to interact with it
 
 -- ┌───────────────────────────┐
 -- │ _____                     │
@@ -87,11 +89,12 @@ Config.CraftingPoints = {
         coords = vector4(210.1188, -932.9069, 29.6918, 58.0372),
         zone = vector3(2.0, 1.0, 2.0),
         label = 'Crafting Point', -- Label for the table
-        model = 'freeze_it-scripts_weed_table', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
+        model = 'v_res_tre_table2', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         restricCrafting = {
             ['onlyOnePlayer'] = true,
             ['onlyOwner'] = false,
-            ['zones'] = {}
+            ['zones'] = {},
+            ['jobs'] = {}
         },
         blip = {
             display = true, -- Display blip on map
@@ -145,11 +148,15 @@ Config.CraftingTables = { -- Create processing table
     ['simple_crafting_table'] = {
         zone = vector3(2.0, 1.0, 2.0),
         label = 'Weed Processing Table', -- Label for the table
-        model = 'freeze_it-scripts_weed_table', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
+        model = 'v_res_tre_table2', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         restricCrafting = {
-            ['onlyOnePlayer'] = true,
-            ['onlyOwner'] = false,
-            ['zones'] = {}
+            ['onlyOnePlayer'] = true, -- Only one player can use the table at a time
+            ['onlyOwner'] = false, -- Only the owner of the table can use it
+            ['zones'] = {}, -- Zones where the table can be used
+            ['jobs'] = {
+                ['police'] = {1, 2, 3, 4, 5}, -- Job name and grade
+                ['sheriff'] = true -- Job name (all grades)
+            }
         },
         blip = {
             display = true, -- Display blip on map
@@ -174,7 +181,7 @@ Config.CraftingTables = { -- Create processing table
                     dict = 'anim@amb@drug_processors@coke@female_a@idles',
                     anim = 'idle_a',
                 },
-                particlefx = {
+                particlefx = { -- Currently in Beta and not fully working
                     dict = 'scr_ar_planes',
                     particle = 'scr_ar_trail_smoke_slow',
                     color = {r = 255, g = 255, b = 153},
@@ -200,5 +207,5 @@ Config.ManualDatabaseSetup = false -- Set to true to disable the automatic datab
 
 Config.EnableVersionCheck = true -- Enable version check
 Config.Branch = 'main' -- Set to 'master' to use the master branch, set to 'development' to use the dev branch
-Config.Debug = false -- Set to true to enable debug mode
-Config.DebugPoly = false -- Set to true to enable debug mode for PolyZone
+Config.Debug = true -- Set to true to enable debug mode
+Config.DebugPoly = true -- Set to true to enable debug mode for PolyZone

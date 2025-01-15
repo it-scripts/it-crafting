@@ -26,7 +26,7 @@ local function AddTableBlip(blipData)
     if blipData.display then
         local blip = AddBlipForCoord(blipData.coords.x, blipData.coords.y, blipData.coords.z)
         SetBlipSprite(blip, blipData.sprite)
-        SetBlipDisplay(blip, 3)
+        SetBlipDisplay(blip, 2)
         SetBlipScale(blip, 0.8)
         SetBlipColour(blip, blipData.displayColor)
         SetBlipAsShortRange(blip, true)
@@ -45,7 +45,7 @@ CreateThread(function()
 
             local blip = AddBlipForCoord(center.x, center.y, 200)
             SetBlipSprite(blip, v.blip.sprite)
-            SetBlipDisplay(blip, 4)
+            SetBlipDisplay(blip, 2)
             SetBlipScale(blip, 0.8)
             SetBlipColour(blip, v.blip.displayColor)
             SetBlipAsShortRange(blip, true)
@@ -60,7 +60,7 @@ CreateThread(function()
         if pointData.blip.display then
             local blip = AddBlipForCoord(pointData.coords.x, pointData.coords.y, pointData.coords.z)
             SetBlipSprite(blip, pointData.blip.sprite)
-            SetBlipDisplay(blip, 3)
+            SetBlipDisplay(blip, 2)
             SetBlipScale(blip, 0.8)
             SetBlipColour(blip, pointData.blip.displayColor)
             SetBlipAsShortRange(blip, true)
@@ -72,7 +72,7 @@ CreateThread(function()
     end
 
 
-    local tables = lib.callback.await('it-crafting:server:getTables')
+    local tables = lib.callback.await('it-crafting:server:getTables', false)
     for _, tableData in pairs(tables) do
         local extendedTableData = Config.CraftingTables[tableData.tableType]
         local blipData = {
@@ -89,9 +89,11 @@ end)
 
 
 RegisterNetEvent('it-crafting:client:addTableBlip', function(tableType, tableId)
-    local tableData = lib.callback.await('it-crafting:server:getDataById', 'table', tableId)
-
-    if not tableData then return end
+    local tableData = lib.callback.await('it-crafting:server:getDataById', false, 'table', tableId)
+    if not tableData then
+        if Config.Debug then lib.print.error('[it-crafting:client:addTableBlip] - Table data not found') end
+        return
+    end
 
     local extendedTableData = Config.CraftingTables[tableType]
     local blipData = {

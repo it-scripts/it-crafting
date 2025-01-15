@@ -457,18 +457,27 @@ function it.getPlayerNameByCitizenId(citizenid)
 end
 
 -- OX Callbacks
-lib.callback.register('it-lib:getPlayerName', function(source)
+lib.callback.register('it-crafting:getPlayerName', function(source)
     return it.getPlayerName(source)
 end)
 
-lib.callback.register('it-lib:getCitizenId', function(source)
+lib.callback.register('it-crafting:getPlayerJob', function(source)
+    local player = it.getPlayer(source)
+    return it.getPlayerJob(player)
+end)
+
+lib.callback.register('it-crafting:getCitizenId', function(source)
     return it.getCitizenId(source)
 end)
 
-lib.callback.register('it-lib:getLicences', function(source)
+lib.callback.register('it-crafting:getLicences', function(source)
     return it.getLicences(source)
 end)
 
-lib.callback.register('it-lib:getLicence', function(source, licenseType)
+lib.callback.register('it-crafting:getLicence', function(source, licenseType)
     return it.getLicence(source, licenseType)
+end)
+
+lib.callback.register('it-crafting:canPlayerCarryItem', function(source, item, amount)
+    return it.canPlayerCarryItem(source, item, amount)
 end)

@@ -4,6 +4,51 @@ local craftingPointsZones = {}
 local craftingTablesZones = {}
 
 
+local function checkIfPlayerCanUseTable(targetType, targetData)
+    local extendedCraftingData = nil
+    if targetType == 'table' then
+        extendedCraftingData = Config.CraftingTables[targetData.tableType]
+    elseif targetType == 'point' then
+        extendedCraftingData = Config.CraftingPoints[targetData.id]
+    else
+        lib.print.error('Invalid craftingType:', targetType)
+        return false
+    end
+
+    if extendedCraftingData.restricCrafting['onlyOwner'] and targetType == 'table' then
+        if targetData.owner ~= it.getCitizenId() then
+            ShowNotification(nil, _U('NOTIFICATION__NOT__OWNER'), 'error')
+            return false
+        end
+    end
+
+    if extendedCraftingData.restricCrafting['jobs'] and next(extendedCraftingData.restricCrafting['jobs']) then
+        local playerJob = it.getPlayerJob()
+
+        if not playerJob then
+            lib.print.error('[checkIfPlayerCanUseTable | ERROR] - Unable to get player job')
+            return false
+        end
+
+        local allowedJobs = extendedCraftingData.restricCrafting['jobs']
+        if not allowedJobs[playerJob.name] then
+            ShowNotification(nil, _U('NOTIFICATION__NOT__ALLOWED'), 'error')
+            return false
+        end
+
+        -- check if allowedJobs[playerJob.name] is boolean or table
+        if type(allowedJobs[playerJob.name]) == 'table' then
+            -- Check if table contains the job grade ['police'] = {1, 2, 3, 4, 5}
+            if not lib.table.contains(allowedJobs[playerJob.name], playerJob.grade_level) then
+                ShowNotification(nil, _U('NOTIFICATION__NOT__ALLOWED'), 'error')
+                return false
+            end
+        end
+    end
+    return true
+end
+
+
 local function createPointBoxTarget(targetType, targetData)
     local options = {}
     if targetType == 'table' then
@@ -20,9 +65,21 @@ local function createPointBoxTarget(targetType, targetData)
                             if Config.Debug then
                                 lib.print.info('[createProccessingTargets] Current table data: ', tableData)
                             end
+
+                            if not checkIfPlayerCanUseTable('table', tableData) then return end
+
                             TriggerEvent('it-crafting:client:showRecipesMenu', 'table', {tableId = tableData.id})
                         end
                     end, 'table', targetData.id)
+                end,
+                distance = 1.5
+            },
+            {
+                label = _U('TARGET__TABLE__REMOVE'),
+                name = 'it-crafting-remove-table',
+                icon = 'fas fa-trash',
+                onSelect = function(data)
+                    lib.callback("it-crafting:server:removeTable", false, targetData.id)
                 end,
                 distance = 1.5
             }
@@ -34,15 +91,17 @@ local function createPointBoxTarget(targetType, targetData)
                 name = 'it-crafting-use-point',
                 icon = 'fas fa-eye',
                 onSelect = function(data)
-                    lib.callback("it-crafting:server:getDataById", false, function(tableData)
-                        if not tableData then
+                    lib.callback("it-crafting:server:getDataById", false, function(pointData)
+                        if not pointData then
                             lib.print.error('[it-crafting] Unable to get table data by network id')
                         else
                             if Config.Debug then
-                                lib.print.info('[createProccessingTargets] Current point data: ', tableData)
+                                lib.print.info('[createProccessingTargets] Current point data: ', pointData)
                             end
-                            lib.print.info('Showing recipes menu')
-                            TriggerEvent('it-crafting:client:showRecipesMenu', 'point', {tableId = tableData.id})
+                            
+                            if not checkIfPlayerCanUseTable('point', pointData) then return end
+
+                            TriggerEvent('it-crafting:client:showRecipesMenu', 'point', {tableId = pointData.id})
                         end
                     end, 'point', targetData.id)
                 end,
@@ -55,7 +114,7 @@ local function createPointBoxTarget(targetType, targetData)
         coords = targetData.coords,
         size = targetData.size,
         rotation = targetData.rotation,
-        debug = Config.TargetDebug,
+        debug = Config.DebugPoly,
         drawSprite = true,
         options = options,
         distance = 1.5,

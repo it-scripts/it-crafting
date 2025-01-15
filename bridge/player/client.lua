@@ -14,36 +14,12 @@ function it.getPlayerData()
 end
 
 function it.getCitizenId()
-    local citizenId = lib.callback.await('it-lib:getCitizenId', false)
+    local citizenId = lib.callback.await('it-crafting:getCitizenId', false)
     return citizenId
 end
 
 function it.getPlayerJob()
-    local job = {}
-    local playerData = it.getPlayerData()
-
-    if it.core == 'qb-core' then
-        job = {
-            name = playerData.job.name,
-            label = playerData.job.label,
-            grade_name = playerData.job.grade,
-            grade_label = playerData.job.grade.name,
-            grade_salary = playerData.job.payment,
-            isboss = playerData.job.isboss,
-            onduty = playerData.job.onduty
-        }
-    elseif it.core == 'esx' then
-        job = {
-            name = playerData.job.name,
-            label = playerData.job.label,
-            grade_name = playerData.job.grade_name,
-            grade_label = playerData.job.grade_label,
-            grade_salary = playerData.job.grade_salary,
-            isboss = playerData.job.grade_name == 'boss' or false,
-            onduty = true
-        }
-    end
-    return job
+    return lib.callback.await('it-crafting:getPlayerJob', false)
 end
 
 function it.getPlayerGang()
@@ -98,21 +74,21 @@ function it.getPlayerName()
     if it.core == 'qb-core' then
         return playerData.charinfo.firstname .. ' ' .. playerData.charinfo.lastname
     elseif it.core == 'esx' then
-        return lib.callback.await('it-lib:getPlayerName', false)
+        return lib.callback.await('it-crafting:getPlayerName', false)
     end
 end
 
 function it.getPlayerNameByCitizenId(citizenId)
-    local playerName = lib.callback.await('it-lib:getPlayerNameByCitizenId', false, citizenId)
+    local playerName = lib.callback.await('it-crafting:getPlayerNameByCitizenId', false, citizenId)
     return playerName
 end
 
 function it.getLicences()
-    local licences = lib.callback.await('it-lib:getLicences', false)
+    local licences = lib.callback.await('it-crafting:getLicences', false)
     return licences
 end
 
 function it.getLicence(licenseType)
-    local licence = lib.callback.await('it-lib:getLicence', false, licenseType)
+    local licence = lib.callback.await('it-crafting:getLicence', false, licenseType)
     return licence
 end

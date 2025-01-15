@@ -189,7 +189,7 @@ end)
 ---@param item string: The item name.
 ---@param cb function: The callback function.
 function it.createUsableItem(item, cb)
-    if ConsumableItems[item] then print('[it-lib] The item ' .. item .. ' is already registered as a consumable item. Skipping the registration of this item.') end
+    if ConsumableItems[item] then print('[it-crafting] The item ' .. item .. ' is already registered as a consumable item. Skipping the registration of this item.') end
 	
     if it.inventory == 'origen' then
         origen_inventory:CreateUseableItem(item, cb)
@@ -273,7 +273,7 @@ end
 function it.getItemLabel(source, itemName)
     local itemLabel
     if it.inventory == 'ox' then
-        itemLabel = lib.callback.await('it-lib:client:getItemLabel', source, itemName)
+        itemLabel = lib.callback.await('it-crafting:client:getItemLabel', source, itemName)
     end
 
     if it.inventory == 'origen' then
@@ -398,22 +398,22 @@ function it.canCarryItem(src, item, amount)
     end
 end
 
-lib.callback.register('it-lib:server:getItemLabel', function(source, itemName)
+lib.callback.register('it-crafting:server:getItemLabel', function(source, itemName)
     local itemLabel = it.getItemLabel(source, itemName)
     return itemLabel
 end)
 
-lib.callback.register('it-lib:hasItem', function(source, item, amount)
+lib.callback.register('it-crafting:hasItem', function(source, item, amount)
     local hasItem = it.hasItem(source, item, amount)
     return hasItem
 end)
 
-lib.callback.register('it-lib:getItemCount', function(source, item)
+lib.callback.register('it-crafting:getItemCount', function(source, item)
     local itemCount = it.getItemCount(source, item)
     return itemCount
 end)
 
-RegisterNetEvent('it-lib:toggleItem', function(toggle, name, amount, metadata)
+RegisterNetEvent('it-crafting:toggleItem', function(toggle, name, amount, metadata)
     local source = source
     it.toggleItem(source, toggle, name, amount, metadata)
 end)

@@ -51,76 +51,146 @@ end
 
 local function createPointBoxTarget(targetType, targetData)
     local options = {}
-    if targetType == 'table' then
-        options = {
-            {
-                label = _U('TARGET__TABLE__LABEL'),
-                name = 'it-crafting-use-table',
-                icon = 'fas fa-eye',
-                onSelect = function(data)
-                    lib.callback("it-crafting:server:getDataById", false, function(tableData)
-                        if not tableData then
-                            lib.print.error('[it-crafting] Unable to get table data by network id')
-                        else
-                            if Config.Debug then
-                                lib.print.info('[createProccessingTargets] Current table data: ', tableData)
+    if it.target == 'ox_target' then
+        if targetType == 'table' then
+            options = {
+                {
+                    label = _U('TARGET__TABLE__LABEL'),
+                    name = 'it-crafting-use-table',
+                    icon = 'fas fa-eye',
+                    onSelect = function(data)
+                        lib.callback("it-crafting:server:getDataById", false, function(tableData)
+                            if not tableData then
+                                lib.print.error('[it-crafting] Unable to get table data by network id')
+                            else
+                                if Config.Debug then
+                                    lib.print.info('[createProccessingTargets] Current table data: ', tableData)
+                                end
+
+                                if not checkIfPlayerCanUseTable('table', tableData) then return end
+
+                                TriggerEvent('it-crafting:client:showRecipesMenu', 'table', {tableId = tableData.id})
                             end
+                        end, 'table', targetData.id)
+                    end,
+                    distance = 1.5
+                },
+                {
+                    label = _U('TARGET__TABLE__REMOVE'),
+                    name = 'it-crafting-remove-table',
+                    icon = 'fas fa-trash',
+                    onSelect = function(data)
+                        lib.callback("it-crafting:server:removeTable", false, targetData.id)
+                    end,
+                    distance = 1.5
+                }
+            }
+        elseif targetType == 'point' then
+            options = {
+                {
+                    label = _U('TARGET__TABLE__LABEL'),
+                    name = 'it-crafting-use-point',
+                    icon = 'fas fa-eye',
+                    onSelect = function(data)
+                        lib.callback("it-crafting:server:getDataById", false, function(pointData)
+                            if not pointData then
+                                lib.print.error('[it-crafting] Unable to get table data by network id')
+                            else
+                                if Config.Debug then
+                                    lib.print.info('[createProccessingTargets] Current point data: ', pointData)
+                                end
+                                
+                                if not checkIfPlayerCanUseTable('point', pointData) then return end
 
-                            if not checkIfPlayerCanUseTable('table', tableData) then return end
+                                TriggerEvent('it-crafting:client:showRecipesMenu', 'point', {tableId = pointData.id})
+                            end
+                        end, 'point', targetData.id)
+                    end,
+                    distance = 1.5
+                }
+            }
+        end
 
-                            TriggerEvent('it-crafting:client:showRecipesMenu', 'table', {tableId = tableData.id})
-                        end
-                    end, 'table', targetData.id)
-                end,
-                distance = 1.5
+        local boxZone = exports.ox_target:addBoxZone({
+            coords = targetData.coords,
+            size = targetData.size,
+            rotation = targetData.rotation,
+            debug = Config.DebugPoly,
+            drawSprite = true,
+            options = options,
+            distance = 1.5,
+        })
+
+        return boxZone
+    elseif it.target == 'qb-target' then
+        if type == 'table' then
+            options = {
+                {
+                    label = _U('TARGET__TABLE__LABEL'),
+                    icon = 'fas fa-eye',
+                    action = function(entity)
+                        lib.callback("it-crafting:server:getDataById", false, function(tableData)
+                            if not tableData then
+                                lib.print.error('[it-crafting] Unable to get table data by network id')
+                            else
+                                if Config.Debug then
+                                    lib.print.info('[createProccessingTargets] Current table data: ', tableData)
+                                end
+
+                                if not checkIfPlayerCanUseTable('table', tableData) then return end
+
+                                TriggerEvent('it-crafting:client:showRecipesMenu', 'table', {tableId = tableData.id})
+                            end
+                        end, 'table', targetData.id)
+                    end
+                },
+                {
+                    label = _U('TARGET__TABLE__REMOVE'),
+                    name = 'it-crafting-remove-table',
+                    icon = 'fas fa-trash',
+                    action = function(entity)
+                        lib.callback("it-crafting:server:removeTable", false, targetData.id)
+                    end
+                }
+            }
+        elseif type == 'point' then
+            options = {
+                {
+                    label = _U('TARGET__TABLE__LABEL'),
+                    icon = 'fas fa-eye',
+                    action = function(entity)
+                        lib.callback("it-crafting:server:getDataById", false, function(pointData)
+                            if not pointData then
+                                lib.print.error('[it-crafting] Unable to get table data by network id')
+                            else
+                                if Config.Debug then
+                                    lib.print.info('[createProccessingTargets] Current point data: ', pointData)
+                                end
+                                
+                                if not checkIfPlayerCanUseTable('point', pointData) then return end
+
+                                TriggerEvent('it-crafting:client:showRecipesMenu', 'point', {tableId = pointData.id})
+                            end
+                        end, 'point', targetData.id)
+                    end
+                }
+            }
+        end
+
+        exports['qb-target']:AddBoxZone(targetData.id, targetData.coords, targetData.size.x, targetData.size.y, {
+            name = targetData.id,
+            heading = targetData.rotation,
+            debugPoly = Config.DebugPoly,
+            maxZ = targetData.size.z,
+            {
+                options = options,
             },
-            {
-                label = _U('TARGET__TABLE__REMOVE'),
-                name = 'it-crafting-remove-table',
-                icon = 'fas fa-trash',
-                onSelect = function(data)
-                    lib.callback("it-crafting:server:removeTable", false, targetData.id)
-                end,
-                distance = 1.5
-            }
-        }
-    elseif targetType == 'point' then
-        options = {
-            {
-                label = _U('TARGET__TABLE__LABEL'),
-                name = 'it-crafting-use-point',
-                icon = 'fas fa-eye',
-                onSelect = function(data)
-                    lib.callback("it-crafting:server:getDataById", false, function(pointData)
-                        if not pointData then
-                            lib.print.error('[it-crafting] Unable to get table data by network id')
-                        else
-                            if Config.Debug then
-                                lib.print.info('[createProccessingTargets] Current point data: ', pointData)
-                            end
-                            
-                            if not checkIfPlayerCanUseTable('point', pointData) then return end
-
-                            TriggerEvent('it-crafting:client:showRecipesMenu', 'point', {tableId = pointData.id})
-                        end
-                    end, 'point', targetData.id)
-                end,
-                distance = 1.5
-            }
-        }
+            distance = 1.5
+        })
+        return targetData.id
+    else
+        lib.print.error('Invalid target:', it.target)
     end
-
-    local boxZone = exports.ox_target:addBoxZone({
-        coords = targetData.coords,
-        size = targetData.size,
-        rotation = targetData.rotation,
-        debug = Config.DebugPoly,
-        drawSprite = true,
-        options = options,
-        distance = 1.5,
-    })
-
-    return boxZone
 end
 
 local function createCraftingPointZones()
@@ -151,15 +221,30 @@ RegisterNetEvent('it-crafting:client:addTableZone', function(tableType, tableId)
             id = tableData.id
         }
         local boxZone = createPointBoxTarget('table', pointData)
+        if it.target == 'ox_target' then
+            if craftingTablesZones[tableData.id] then exports.ox_target:removeZone(craftingTablesZones[tableData.id]) end
+            craftingTablesZones[tableData.id] = boxZone
+        elseif it.target == 'qb-target' then
+            if craftingTablesZones[tableData.id] then exports['qb-target']:RemoveZone(tableData.id) end
+            craftingTablesZones[tableData.id] = boxZone
+        end
         if craftingTablesZones[tableData.id] then exports.ox_target:removeZone(craftingTablesZones[tableData.id]) end
         craftingTablesZones[tableData.id] = boxZone
     end
 end)
 
 RegisterNetEvent('it-crafting:client:removeTableZone', function(tableId)
-    if craftingTablesZones[tableId] then
-        exports.ox_target:removeZone(craftingTablesZones[tableId])
-        craftingTablesZones[tableId] = nil
+
+    if it.target == 'ox_target' then
+        if craftingTablesZones[tableId] then
+            exports.ox_target:removeZone(craftingTablesZones[tableId])
+            craftingTablesZones[tableId] = nil
+        end
+    elseif it.target == 'qb-target' then
+        if craftingTablesZones[tableId] then
+            exports['qb-target']:RemoveZone(tableId)
+            craftingTablesZones[tableId] = nil
+        end
     end
 end)
 
@@ -182,8 +267,14 @@ CreateThread(function()
                 id = tableData.id
             }
             local boxZone = createPointBoxTarget('table', pointData)
-            if craftingTablesZones[tableData.id] then exports.ox_target:removeZone(craftingTablesZones[tableData.id]) end
-            craftingTablesZones[tableData.id] = boxZone
+
+            if it.target == 'ox_target' then
+                if craftingTablesZones[tableData.id] then exports.ox_target:removeZone(craftingTablesZones[tableData.id]) end
+                craftingTablesZones[tableData.id] = boxZone
+            elseif it.target == 'qb-target' then
+                if craftingTablesZones[tableData.id] then exports['qb-target']:RemoveZone(tableData.id) end
+                craftingTablesZones[tableData.id] = boxZone
+            end
         end
     end
 end)
@@ -195,15 +286,12 @@ AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end
 
     if it.getTargetName() == 'qb-target' then
-        for _, v in pairs(Config.PlantTypes) do
-            for _, plant in pairs(v) do
-                exports['qb-target']:RemoveTargetModel(plant[1])
-            end
+        for _, zoneId in pairs(craftingPointsZones) do
+            exports['qb-target']:RemoveZone(zoneId)
         end
-        for k, v in pairs(Config.ProcessingTables) do
-            if v.model ~= nil then
-                exports['qb-target']:RemoveTargetModel(v.model)
-            end
+
+        for _, zoneId in pairs(craftingTablesZones) do
+            exports['qb-target']:RemoveZone(zoneId)
         end
     elseif it.getTargetName() == 'ox_target' then
 

@@ -151,7 +151,7 @@ local function createPointBoxTarget(targetType, targetData)
                     action = function(entity)
                         lib.callback("it-crafting:server:removeTable", false, targetData.id)
                     end
-                }
+                },
             }
         elseif type == 'point' then
             options = {
@@ -172,20 +172,20 @@ local function createPointBoxTarget(targetType, targetData)
                                 TriggerEvent('it-crafting:client:showRecipesMenu', 'point', {tableId = pointData.id})
                             end
                         end, 'point', targetData.id)
-                    end
+                    end,
                 }
             }
         end
 
-        exports['qb-target']:AddBoxZone(targetData.id, targetData.coords, targetData.size.x, targetData.size.y, {
+        exports['qb-target']:AddBoxZone(targetData.id, vector3(targetData.coords.x, targetData.coords.y, targetData.coords.z + (targetData.size.z / 2)), targetData.size.x, targetData.size.y, {
             name = targetData.id,
-            heading = targetData.rotation,
+            heading = (targetData.rotation + 90),
             debugPoly = Config.DebugPoly,
-            maxZ = targetData.size.z,
-            {
-                options = options,
-            },
-            distance = 1.5
+            maxZ = targetData.coords.z + (targetData.size.z / 2),
+            minZ = targetData.coords.z,
+        }, {
+            options = options,
+            distance = 5.0
         })
         return targetData.id
     else
@@ -225,11 +225,9 @@ RegisterNetEvent('it-crafting:client:addTableZone', function(tableType, tableId)
             if craftingTablesZones[tableData.id] then exports.ox_target:removeZone(craftingTablesZones[tableData.id]) end
             craftingTablesZones[tableData.id] = boxZone
         elseif it.target == 'qb-target' then
-            if craftingTablesZones[tableData.id] then exports['qb-target']:RemoveZone(tableData.id) end
+            -- if craftingTablesZones[tableData.id] then exports['qb-target']:RemoveZone(tableData.id) end
             craftingTablesZones[tableData.id] = boxZone
         end
-        if craftingTablesZones[tableData.id] then exports.ox_target:removeZone(craftingTablesZones[tableData.id]) end
-        craftingTablesZones[tableData.id] = boxZone
     end
 end)
 
@@ -272,7 +270,7 @@ CreateThread(function()
                 if craftingTablesZones[tableData.id] then exports.ox_target:removeZone(craftingTablesZones[tableData.id]) end
                 craftingTablesZones[tableData.id] = boxZone
             elseif it.target == 'qb-target' then
-                if craftingTablesZones[tableData.id] then exports['qb-target']:RemoveZone(tableData.id) end
+                -- if craftingTablesZones[tableData.id] then exports['qb-target']:RemoveZone(tableData.id) end
                 craftingTablesZones[tableData.id] = boxZone
             end
         end

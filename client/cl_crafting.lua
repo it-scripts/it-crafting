@@ -318,6 +318,15 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
 
     if recipe.skillCheck.enabled then
         for i = 1, amount do
+
+            -- Check if the player can carry then item
+            if Config.UseWeightSystem then
+                if it.canCarryItems(recipe.outputs) then
+                    ShowNotification(nil, _U('NOTIFICATION__CANT__CARRY'), 'error')
+                    break
+                end
+            end
+
             local success = lib.skillCheck(recipe.skillCheck.difficulty, recipe.skillCheck.keys)
             if success then
                 ShowNotification(nil, _U('NOTIFICATION__SKILL__SUCCESS'), 'success')
@@ -367,6 +376,13 @@ RegisterNetEvent('it-crafting:client:removeTable', function(args)
 
     local tableData = lib.callback.await('it-crafting:server:getDataById', false, 'table', args.tableId)
     local entity = NetworkGetEntityFromNetworkId(tableData.netId)
+
+    if Config.UseWeightSystem then
+        if it.canCarryItem(tableData.tableType, 1) then
+            ShowNotification(nil, _U('NOTIFICATION__CANT__CARRY'), 'error')
+            return
+        end
+    end
 
     local ped = PlayerPedId()
     TaskTurnPedToFaceEntity(ped, entity, 1.0)

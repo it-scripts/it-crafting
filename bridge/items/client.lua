@@ -48,6 +48,11 @@ function it.canCarryItem(itemName, amount)
     return canCarry
 end
 
+function it.canCarryItems(items)
+    local canCarry = lib.callback.await('it-crafting:canCarryItems', false, items)
+    return canCarry
+end
+
 lib.callback.register('it-crafting:client:getItemLabel', function(itemName)
     local items = exports.ox_inventory:Items()
     return items[itemName].label

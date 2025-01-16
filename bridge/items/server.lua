@@ -397,6 +397,31 @@ function it.canCarryItem(src, item, amount)
         return false
     end
 end
+-- itemList = {[item] = amount, [item] = amount}
+function it.canCarryItems(src, itemList)
+    local totalWeight = 0
+    for item, amount in pairs(itemList) do
+        local itemWeight = it.getItemWeight(item)
+        totalWeight = totalWeight + (itemWeight * amount)
+    end
+    local currentWeight = it.getCurrentWeight(src)
+    local maxWeight = it.getMaxWeight(src)
+    if currentWeight + totalWeight <= maxWeight then
+        return true
+    else
+        return false
+    end
+end
+
+lib.callback.register('it-crafting:canCarryItem', function(source, item, amount)
+    local canCarry = it.canCarryItem(source, item, amount)
+    return canCarry
+end)
+
+lib.callback.register('it-crafting:canCarryItems', function(source, items)
+    local canCarry = it.canCarryItems(source, items)
+    return canCarry
+end)
 
 lib.callback.register('it-crafting:server:getItemLabel', function(source, itemName)
     local itemLabel = it.getItemLabel(source, itemName)

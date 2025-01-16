@@ -30,7 +30,7 @@ if it.inventory == 'ox' then
         end
     end)
 else
-    for crTable, _ in pairs(Config.CraftingTable) do
+    for crTable, _ in pairs(Config.CraftingTables) do
         it.createUsableItem(crTable, function(source, data)
             local src = source
             if it.hasItem(src, crTable, 1) then

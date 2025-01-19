@@ -32,7 +32,7 @@ it-crafting is a lightweight crafting system for FiveM servers. Originally used 
 - `⚙️` **| [ox_lib](https://github.com/overextended/ox_lib)**
 - `⚙️` **| [oxmysql](https://github.com/overextended/oxmysql)**
 - `⚙️` **| [ox_target](https://github.com/overextended/ox_target)** *
-- `⚙️` **| [qb-target](https://github.com/qbcore-framework/qb-target)** *
+- ~~`⚙️` **| [qb-target](https://github.com/qbcore-framework/qb-target)** *~~ (The script currently does not work with qb-target)
 
 * Optional
 

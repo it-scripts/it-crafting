@@ -436,25 +436,21 @@ function it.getPlayerName(source)
 end
 
 function it.getPlayerNameByCitizenId(citizenid)
-    -- Get Player name from citizenId
-    if it.core == 'qb-core' then
-        local player = CoreObject.Functions.GetPlayerByCitizenId(citizenid)
-        return player.PlayerData.charinfo.firstname .. ' ' .. player.PlayerData.charinfo.lastname
+
+    -- Check for all player online which player has the same citizenid
+    for _, playerId in ipairs(GetPlayers()) do
+        if it.getCitizenId(playerId) == citizenid then
+            return it.getPlayerName(playerId)
+        end
     end
 
-    if it.core == 'esx' then
-        local player = CoreObject.GetPlayerFromIdentifier(citizenid)
-        return player.name
-    end
-
-    if it.core == 'ND_Core' then
-        local player = CoreObject.getPlayerFromCitizenId(citizenid)
-        return player.getData('name')
-    end
-
-    lib.print.error('['..it.name..' | getPlayerName] Unable to get player name. It seems like the framework is not supported.')
-    lib.print.error('['..it.name..' | getPlayerName] Debug information:', "Core: "..it.core, "it:", it, "cache:", cache)
+    lib.print.error('['..it.name..' | getPlayerNameByCitizenId] Unable to get player name by citizen id. It seems like the player is not online.')
+    return nil
 end
+
+lib.callback.register('it-crafting:getPlayerNameByCitizenId', function(source, citizenid)
+    return it.getPlayerNameByCitizenId(citizenid)
+end)
 
 -- OX Callbacks
 lib.callback.register('it-crafting:getPlayerName', function(source)

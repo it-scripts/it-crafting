@@ -79,7 +79,7 @@ Our script is fully configurable, allowing server admins to customize every aspe
 <br>
 <table><tr><td><h4 align='center'>Legal Notices</h4></tr></td>
 <tr><td>
-it-drugs (it-scripts)
+it-crafting (it-scripts)
 
 Copyright (C) 2024 [it-scripts](https://github.com/it-scripts)
 

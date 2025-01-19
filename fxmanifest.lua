@@ -31,6 +31,7 @@ client_scripts {
     'client/cl_crafting.lua',
     'client/cl_target.lua',
     'client/cl_blips.lua',
+    'client/cl_admin.lua',
 }
 
 server_scripts {
@@ -41,10 +42,11 @@ server_scripts {
     
     'server/classes/*.lua',
 
+    'server/sv_setupdatabase.lua',
     'server/sv_crafting.lua',
     'server/sv_usableitems.lua',
     'server/sv_webhooks.lua',
-    'server/sv_setupdatabase.lua'
+    'server/sv_admin.lua'
 }
 
 dependencies {

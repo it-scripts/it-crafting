@@ -25,7 +25,7 @@ RegisterNetEvent('it-crafting:client:showRecipesMenu', function(type, data)
 
     lib.registerContext({
         id = "it-crafting-recipes-menu",
-        title = _U('MENU__PROCESSING'),
+        title = _U('MENU__CRAFTING__TITLE'),
         onExit = function()
             TriggerEvent('it-crafting:client:syncRestLoop', false)
         end,
@@ -62,9 +62,9 @@ RegisterNetEvent("it-crafting:client:showCraftingMenu", function(type, data)
     end
 
     table.insert(options, {
-        title = _U('MENU__TABLE__PROCESS'),
+        title = _U('MENU__TABLE__CRAFT__TITLE'),
         icon = "play",
-        description = _U('MENU__TABLE__PROCESS__DESC'),
+        description = _U('MENU__TABLE__CRAFT__DESC'),
         arrow = true,
         onSelect = function(_)
             TriggerEvent('it-crafting:client:craftItem', type, {craftId = data.craftId, recipeId = data.recipeId})
@@ -86,4 +86,177 @@ RegisterNetEvent("it-crafting:client:showCraftingMenu", function(type, data)
     })
     TriggerEvent('it-crafting:client:syncRestLoop', true)
     lib.showContext("it-crafting-processing-menu")
+end)
+
+-- ┌──────────────────────────────────────────────────────────┐
+-- │    _       _           _         __  __                  │
+-- │   / \   __| |_ __ ___ (_)_ __   |  \/  | ___ _ __  _   _ │
+-- │  / _ \ / _` | '_ ` _ \| | '_ \  | |\/| |/ _ \ '_ \| | | |│
+-- │ / ___ \ (_| | | | | | | | | | | | |  | |  __/ | | | |_| |│
+-- │/_/   \_\__,_|_| |_| |_|_|_| |_| |_|  |_|\___|_| |_|\__,_|│
+-- └──────────────────────────────────────────────────────────┘
+
+local function tablelength(T)
+    local count = 0
+    for _ in pairs(T) do count = count + 1 end
+    return count
+end
+
+RegisterNetEvent('it-crafting:client:showMainAdminMenu', function()
+
+    local allTables = lib.callback.await('it-crafting:server:getTables', false)
+    local tableCount = tablelength(allTables)
+
+    lib.registerContext({
+        id = "it-crafting-admin-main-menu-tables",
+        title = _U('MENU__ADMIN__TABLE__MAIN'),
+        onExit = function()
+            TriggerEvent('it-crafting:client:syncRestLoop', false)
+        end,
+        options = {
+            {
+                title = _U('MENU__TABLE__COUNT__TITLE'),
+                description = _U('MENU__TABLE__COUNT__DESC'):format(tableCount),
+                icon = "flask-vial",
+            },
+            {
+                title = _U('MENU__LIST__TABLES__TITLE'),
+                description = _U('MENU__LIST__TABLES__DESC'),
+                icon = "list",
+                arrow = true,
+                onSelect = function()
+                    TriggerEvent('it-crafting:client:generateTableListMenu')
+                end,
+            },
+            {
+                title = _U('MENU__ADD__BLIPS__TITLE'),
+                description = _U('MENU__ADD_TABLE__BLIPS__DESC'),
+                icon = "map-location-dot",
+                arrow = true,
+                onSelect = function()
+                    TriggerEvent('it-crafting:client:addAllAdminBlips')
+                end,
+            },
+            {
+                title = _U('MENU__REMOVE__BLIPS__TITLE'),
+                description = _U('MENU__REMOVE__TABLE__BLIPS__DESC'),
+                icon = "eraser",
+                arrow = true,
+                onSelect = function()
+                    TriggerEvent('it-crafting:client:removeAllAdminBlips')
+                end,
+            },
+        }
+    })
+    TriggerEvent('it-crafting:client:syncRestLoop', true)
+    lib.showContext("it-crafting-admin-main-menu-tables")
+end)
+
+RegisterNetEvent('it-crafting:client:showTableListMenu', function(data)
+    
+    local tableList = data.tableList
+
+    local options = {}
+    for _, v in ipairs(tableList) do
+        table.insert(options, {
+            title = v.label,
+            description = _U('MENU__DIST'):format(it.round(v.distance, 2)),
+            icon = "flask-vial",
+            arrow = true,
+            onSelect = function()
+                TriggerEvent('it-crafting:client:showTableAdminMenu', {tableData = v})
+            end,
+        })
+    end
+
+    lib.registerContext({
+        id = "it-crafting-table-list-menu",
+        title = _U('MENU__LIST__TABLES__TITLE'),
+        menu = 'it-crafting-placeholder',
+        onBack = function()
+            TriggerEvent('it-crafting:client:showMainAdminMenu', {menuType = 'tables'})
+        end,
+        onExit = function()
+            TriggerEvent('it-crafting:client:syncRestLoop', false)
+        end,
+        options = options
+    })
+    TriggerEvent('it-crafting:client:syncRestLoop', true)
+    lib.showContext("it-crafting-table-list-menu")
+end)
+
+RegisterNetEvent('it-crafting:client:showTableAdminMenu', function(data)
+    local tableData = data.tableData
+    local streetNameHash, _ = GetStreetNameAtCoord(tableData.coords.x, tableData.coords.y, tableData.coords.z)
+    local streetName = GetStreetNameFromHashKey(streetNameHash)
+
+    lib.registerContext({
+        id = "it-crafting-table-admin-menu",
+        title = _U('MENU__TABLE__ID'):format(tableData.id),
+        menu = 'it-crafting-placeholder',
+        onBack = function()
+            TriggerEvent('it-crafting:client:generateTableListMenu')
+        end,
+        onExit = function()
+            TriggerEvent('it-crafting:client:syncRestLoop', false)
+        end,
+        options = {
+            {
+                title = _U('MENU__OWNER'),
+                description = tableData.owner,
+                --description = it.getPlayerNameByCitizenId(tableData.owner),
+                metadata = {
+                    _U('MENU__OWNER__META')
+                },
+                onSelect = function()
+                    lib.setClipboard(tableData.owner)
+                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD'):format(tableData.owner), 'success')
+                end
+            },
+            {
+                title = _U('MENU__TABLE__LOCATION'),
+                description = _U('MENU__LOCATION__DESC'):format(streetName, tableData.coords.x, tableData.coords.y, tableData.coords.z),
+                metadata = {
+                    _U('MENU__LOCATION__META')
+                },
+                icon = "map-marker",
+                onSelect = function()
+                    lib.setClipboard('('..tableData.coords.x..", "..tableData.coords.y..", "..tableData.coords.z..')')
+                    ShowNotification(nil, _U('NOTIFICATION__COPY__CLIPBOARD'):format('('..tableData.coords.x..", "..tableData.coords.y..", "..tableData.coords.z..')'), 'success')
+                end
+            },
+            {
+                title = _U('MENU__TABLE__TELEPORT'),
+                description = _U('MENU__TABLE__TELEPORT__DESC'),
+                icon = "route",
+                arrow = true,
+                onSelect = function()
+                    SetEntityCoords(PlayerPedId(), tableData.coords.x, tableData.coords.y, tableData.coords.z)
+                    ShowNotification(nil, _U('NOTIFICATION__TELEPORTED'), 'success')
+                end
+            },
+            {
+                title = _U('MENU__ADD__BLIP'),
+                description = _U('MENU__ADD__TABLE__BLIP__DESC'),
+                icon = "map-location-dot",
+                arrow = true,
+                onSelect = function()
+                    TriggerEvent('it-crafting:client:addAdminBlip', tableData.id)
+                    ShowNotification(nil, _U('NOTIFICATION__BLIP__ADDED'), 'success')
+                end,
+            },
+            {
+                title = _U('MENU__TABLE__DESTROY'),
+                description = _U('MENU__TABLE__DESTROY__DESC'),
+                icon = "trash",
+                arrow = true,
+                onSelect = function()
+                    TriggerServerEvent('it-crafting:server:removeTable', {tableId = tableData.id, extra='admin'})
+                    ShowNotification(nil, _U('NOTIFICATION__TABLE__DESTROYED'), 'success')
+                end,
+            }
+        }
+    })
+    TriggerEvent('it-crafting:client:syncRestLoop', true)
+    lib.showContext("it-crafting-table-admin-menu")
 end)

@@ -96,7 +96,7 @@ local placeCraftingTable = function(ped, tableItem, coords, rotation, metadata)
 
     local targetZone = checkforZones(coords, extendedItemData.restricCrafting['zones'])
     if targetZone then
-        ShowNotification(nil, _U('NOTIFICATION__NOT__ALLOWED'), 'error')
+        ShowNotification(nil, _U('NOTIFICATION__NOT__ALLOWED__ZONE'), 'error')
         TriggerEvent('it-crafting:client:syncRestLoop', false)
         if it.inventory == 'ox' then
             it.giveItem(tableItem, 1, metadata)
@@ -156,6 +156,7 @@ RegisterNetEvent('it-crafting:client:placeCraftingTable', function(tableItem, me
     RequestModel(hashModel)
     while not HasModelLoaded(hashModel) do Wait(0) end
     
+    TriggerEvent('it-crafting:client:syncRestLoop', true)
     lib.showTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'), {
         position = "left-center",
         icon = "spoon",
@@ -247,7 +248,6 @@ RegisterNetEvent('it-crafting:client:placeCraftingTable', function(tableItem, me
 end)
 
 RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
-
     if Config.Debug then lib.print.info('Crafting Item:', craftingType, args) end
     
     local craftingData = lib.callback.await('it-crafting:server:getDataById', false, craftingType, args.craftId)
@@ -273,6 +273,7 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
         return
     end
 
+    TriggerEvent('it-crafting:client:syncRestLoop', true)
     local amount = tonumber(input[1])
     for item, itemData in pairs(recipe.ingrediants) do
         if not it.hasItem(item, itemData.amount * amount) then
@@ -344,7 +345,7 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
         for i = 1, amount do
             if lib.progressBar({
                 duration = recipe.processTime * 1000,
-                label = _U('PROGRESSBAR__PROCESS__DRUG'),
+                label = _U('PROGRESSBAR__CRAFT__ITEM'),
                 useWhileDead = false,
                 canCancel = true,
                 disable = {
@@ -383,6 +384,8 @@ RegisterNetEvent('it-crafting:client:removeTable', function(args)
             return
         end
     end
+
+    TriggerEvent('it-crafting:client:syncRestLoop', true)
 
     local ped = PlayerPedId()
     TaskTurnPedToFaceEntity(ped, entity, 1.0)

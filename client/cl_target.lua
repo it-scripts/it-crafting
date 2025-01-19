@@ -15,9 +15,9 @@ local function checkIfPlayerCanUseTable(targetType, targetData)
         return false
     end
 
-    if extendedCraftingData.restricCrafting['onlyOwner'] and targetType == 'table' then
+    if extendedCraftingData.restricCrafting['onlyOwnerCraft'] and targetType == 'table' then
         if targetData.owner ~= it.getCitizenId() then
-            ShowNotification(nil, _U('NOTIFICATION__NOT__OWNER'), 'error')
+            ShowNotification(nil, _U('NOTIFICATION__NOT__ALLOWED'), 'error')
             return false
         end
     end
@@ -80,7 +80,21 @@ local function createPointBoxTarget(targetType, targetData)
                     name = 'it-crafting-remove-table',
                     icon = 'fas fa-trash',
                     onSelect = function(data)
-                        lib.callback("it-crafting:server:removeTable", false, targetData.id)
+                        lib.callback("it-crafting:server:getDataById", false, function(tableData)
+                            if not tableData then
+                                lib.print.error('[it-crafting] Unable to get table data by network id')
+                            else
+                                local extendedCraftingData = nil
+                                extendedCraftingData = Config.CraftingTables[tableData.tableType]
+                                if extendedCraftingData.restricCrafting['onlyOwnerRemove'] then
+                                    if tableData.owner ~= it.getCitizenId() then
+                                        ShowNotification(nil, _U('NOTIFICATION__NOT__ALLOWED'), 'error')
+                                        return
+                                    end
+                                    TriggerEvent('it-crafting:client:removeTable', {tableId = targetData.id})
+                                end
+                            end
+                        end, 'table', targetData.id)
                     end,
                     distance = 1.5
                 }

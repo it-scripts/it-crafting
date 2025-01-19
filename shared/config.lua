@@ -40,7 +40,6 @@ Config.Language = 'en' -- Choose your language from the locales folder
     You can also set the player plant limit, this is the maximum amount of plants a player can have simultaneously.
 ]]
 Config.rayCastingDistance = 7.0 -- distance in meters
--- TODO: IMPLEMENT THE WEIGHT CHECKS!
 Config.UseWeightSystem = false -- Set to true to use the weight system
 Config.PlayerTableLimit = 3 -- Maximum amount of tables a player can have
 Config.MinDistanceToTable = 3.0 -- Minimum distance to a table to interact with it
@@ -69,7 +68,7 @@ Config.Zones = {
         
         blip = {
             display = true, -- Display blip on map
-            sprite = 469, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
+            sprite = 446, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
             displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
             displayText = 'Crafting Zone',
         },
@@ -98,7 +97,7 @@ Config.CraftingPoints = {
         },
         blip = {
             display = true, -- Display blip on map
-            sprite = 469, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
+            sprite = 446, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
             displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
             displayText = 'Crafting Point',
         },
@@ -151,18 +150,16 @@ Config.CraftingTables = { -- Create processing table
         model = 'v_res_tre_table2', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         restricCrafting = {
             ['onlyOnePlayer'] = true, -- Only one player can use the table at a time
-            ['onlyOwner'] = false, -- Only the owner of the table can use it
+            ['onlyOwnerCraft'] = false, -- Only the owner of the table can use it
+            ['onlyOwnerRemove'] = true, -- Only the owner of the table can remove it
             ['zones'] = {}, -- Zones where the table can be used
-            ['jobs'] = {
-                ['police'] = {1, 2, 3, 4, 5}, -- Job name and grade
-                ['sheriff'] = true -- Job name (all grades)
-            }
+            ['jobs'] = {}
         },
         blip = {
             display = true, -- Display blip on map
-            sprite = 469, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
+            sprite = 446, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
             displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
-            displayText = 'Weed Zone',
+            displayText = 'Crafting Table',
         },
         recipes = {
             ['table_joint_lemon_haze'] = {

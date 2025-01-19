@@ -1,198 +1,120 @@
 Locales['de'] = {
+    -- Benachrichtigungen
+    ['NOTIFICATION_CANCELED'] = 'Aktion abgebrochen',
 
-    ['MENU__DEALER'] = 'Dealer: %s',
-    ['MENU__DEALER__DESC'] = 'Kaufe dies für $%g pro Stück',
+    -- cl_crafting.lua
+    ['NOTIFICATION__TO__CLOSE'] = 'Du bist zu nah an einer anderen Werkbank',
+    ['NOTIFICATION__MAX__TABLES'] = 'Zerstöre zuerst eine Werkbank, bevor du diese platzierst',
 
-    ['MENU__PLANT'] = '%s',
-    ['MENU__DEAD__PLANT'] = 'Tote Pflanze',
+    ['NOTIFICATION__NOT__ALLOWED__ZONE'] = 'Du kannst diese Werkbank hier nicht platzieren',
 
-    ['MENU__PLANT__LIFE'] = 'Gesundheit',
-    ['MENU__PLANT__LIFE__META'] = 'Die Gesundheit der Pflanze, wenn sie 0 erreicht, stirbt die Pflanze',
-    
-    ['MENU__PLANT__STAGE'] = 'Stufe',
-    ['MENU__PLANT__STAGE__META'] = 'Die Stufe der Pflanze, wenn sie 100 erreicht, kann die Pflanze geerntet werden',
+    ['NOTIFICATION__IN__VEHICLE'] = 'Bitte verlasse dein Fahrzeug',
 
-    ['MENU__PLANT__FERTILIZER'] = 'Dünger',
-    ['MENU__PLANT__FERTILIZER__META'] = 'Jede Pflanze braucht Nährstoffe zum Wachsen, dünge deine Pflanze',
-    
-    ['MENU__PLANT__WATER'] = 'Wasser',
-    ['MENU__PLANT__WATER__META'] = 'Achte darauf, dass deine Pflanze immer etwas Wasser hat',
+    ['NOTIFICATION__NO__AMOUNT'] = 'Du musst eine gültige Menge eingeben',
 
-    ['MENU__PLANT__DESTROY'] = 'Zerstören',
-    ['MENU__PLANT__DESTROY__DESC'] = 'Zerstöre diese Pflanze',
+    ['NOTIFICATION__MISSING__INGIDIANT'] = 'Dir fehlen einige Zutaten, um diesen Gegenstand herzustellen',
 
-    ['MENU__PLANT__HARVEST'] = 'Ernten',
-    ['MENU__PLANT__HARVEST__DESC'] = 'Ernte diese Pflanze',
+    ['NOTIFICATION__TABLE__IN__USE'] = 'Diese Werkbank wird bereits benutzt',
 
-    ['MENU__ITEM'] = 'Gegenstände',
-    ['MENU__ITEM__DESC'] = 'Benutze diesen Gegenstand, um deine Pflanze zu pflegen',
+    ['NOTIFICATION__SKILL__SUCCESS'] = 'Du hast erfolgreich einen Gegenstand hergestellt',
+    ['NOTIFICATION__SKILL__ERROR'] = 'Du hast es nicht geschafft, einen Gegenstand herzustellen',
 
-    ['MENU__PROCESSING'] = 'Verarbeitung',
-    ['MENU__RECIPE__DESC'] = 'Verarbeite deine Drogen mit diesem Rezept',
+    ['NOTIFICATION__CANT__CARRY'] = 'Du kannst das nicht tragen',
+
+    -- cl_target.lua
+    ['NOTIFICATION__NOT__ALLOWED'] = 'Du darfst diese Werkbank nicht benutzen',
+
+    -- cl_admin.lua
+    ['NOTIFICATION__COPY__CLIPBOARD'] = '%s in die Zwischenablage kopiert',
+
+    -- cl_blips.lua
+    ['NOTIFICATION__BLIPS__ADDED'] = 'Alle Blips zur Karte hinzugefügt',
+    ['NOTIFICATION__BLIPS__REMOVED'] = 'Alle Blips von der Karte entfernt',
+
+    ['NOTIFICATION__BLIP__ADDED'] = 'Blip hinzugefügt',
+    ['NOTIFICATION__BLIP__NOT_FOUND'] = 'Blip nicht gefunden',
+    ['NOTIFICATION__BLIP__REMOVED'] = 'Blip entfernt',
+    ['NOTIFICATION__BLIP__EXISTS'] = 'Dieser Blip existiert bereits',
+
+    -- sv_crafting
+    ['NOTIFICATION__CRAFT__FAIL'] = 'Du hast es nicht geschafft, einen Gegenstand herzustellen',
+
+    -- Menüs
+    -- cl_menus.lua
+    ['MENU__RECIPE__DESC'] = 'Stelle deine Gegenstände mit diesem Rezept her',
+    ['MENU__CRAFTING__TITLE'] = 'Herstellung',
 
     ['MENU__UNKNOWN__INGREDIANT'] = 'Unbekannte Zutat',
-    ['MENU__INGREDIANT__DESC'] = 'Du brauchst %g von dieser Zutat',
+    ['MENU__INGREDIANT__DESC'] = 'Du benötigst %g von dieser Zutat',
 
-    ['MENU__TABLE__PROCESS'] = 'Drogen verarbeiten',
-    ['MENU__TABLE__PROCESS__DESC'] = 'Starte die Drogenverarbeitung',
+    ['MENU__TABLE__CRAFT__TITLE'] = 'Gegenstände herstellen',
+    ['MENU__TABLE__CRAFT__DESC'] = 'Beginne mit der Herstellung von Gegenständen',
 
-    ['MENU__TABLE__REMOVE'] = 'Tisch entfernen',
-    ['MENU__TABLE__REMOVE__DESC'] = 'Hol dir diesen Tisch zurück',
+    ['MENU__ADMIN__TABLE__MAIN'] = 'Admin-Panel',
 
-    ['MENU__DEALER__ACTION'] = "Was möchtest du tun?",
+    ['MENU__TABLE__COUNT__TITLE'] = 'Gesamtzahl der Werkbänke',
+    ['MENU__TABLE__COUNT__DESC'] = 'Es gibt derzeit %g Werkbänke',
 
-    ['MENU__DEALER__BUY'] = 'Kaufen',
-    ['MENU__DEALER__BUY__DESC'] = 'Kaufe Gegenstände vom Dealer',
-    ['MENU__DEALER_BUY_ITEM__DESC'] = 'Kaufe %s für $%g pro Stück',
+    ['MENU__LIST__TABLES__TITLE'] = 'Werkbänke anzeigen',
+    ['MENU__LIST__TABLES__DESC'] = 'Eine Liste aller Werkbänke anzeigen',
 
-    ['MENU__DEALER_SELL'] = 'Verkaufen',
-    ['MENU__DEALER__SELL_DESC'] = 'Verkaufe Gegenstände an den Dealer',
-    ['MENU__DEALER_SELL_ITEM__DESC'] = 'Verkaufe %s für $%g pro Stück',
+    ['MENU__ADD__BLIPS__TITLE'] = 'Blips hinzufügen',
+    ['MENU__ADD_TABLE__BLIPS__DESC'] = 'Füge alle Werkbänke zu deiner Karte hinzu',
 
-    
-
-    ['MENU__SELL'] = 'Verkaufen',
-    ['MENU__SELL__DEAL'] = 'Deal',
-    ['MENU__SELL__DESC'] = 'Verkaufe %s (x%g) für $%g',
-
-    ['MENU__SELL__ACCEPT'] = 'Angebot annehmen',
-    ['MENU__SELL__ACCEPT__DESC'] = 'Nimm das aktuelle Angebot an',
-
-    ['MENU__SELL__REJECT'] = 'Angebot ablehnen',
-    ['MENU__SELL__REJECT__DESC'] = 'Lehne das aktuelle Angebot ab',
-
-    ['MENU__ADMIN__PLANT__MAIN'] = 'Pflanzenverwaltung',
-    ['MENU__ADMIN__TABLE__MAIN'] = 'Tischverwaltung',
-    
-    ['MENU__PLANT__COUNT'] = 'Gesamtzahl Pflanzen',
-    ['MENU__PLANT__COUNT__DESC'] = 'Es gibt derzeit %g aktive Pflanzen',
-
-    ['MENU__TABLE__COUNT'] = 'Gesamtzahl Tische',
-    ['MENU__TABLE__COUNT__DESC'] = 'Es gibt derzeit %g aktive Tische',
-
-    ['MENU__LIST__PLANTS'] = 'Pflanzen nach Entfernung anzeigen',
-    ['MENU__LIST__PLANTS__DESC'] = 'Detaillierte Informationen zu jeder Pflanze anzeigen',
-
-    ['MENU__LIST__TABLES'] = 'Tische nach Entfernung anzeigen',
-    ['MENU__LIST__TABLES__DESC'] = 'Detaillierte Informationen zu jedem Tisch anzeigen',
-
-    ['MENU__ADD__BLIPS'] = 'Blips zur Karte hinzufügen',
-    ['MENU__ADD__PLANT__BLIPS__DESC'] = 'Zeige alle Pflanzenstandorte auf der Karte an',
-    ['MENU__ADD_TABLE__BLIPS__DESC'] = 'Zeige alle Tischstandorte auf der Karte an',
-
-    ['MENU__REMOVE__BLIPS'] = 'Blips von der Karte entfernen',
-    ['MENU__REMOVE__PLANT__BLIPS__DESC'] = 'Entferne alle Pflanzenstandorte von der Karte',
-    ['MENU__REMOVE__TABLE__BLIPS__DESC'] = 'Entferne alle Tischstandorte von der Karte',
-
-    ['MENU__PLANT__LIST'] = 'Alle Pflanzen',
-    ['MENU__TABLE__LIST'] = 'Alle Tische',
+    ['MENU__REMOVE__BLIPS__TITLE'] = 'Blips entfernen',
+    ['MENU__REMOVE__TABLE__BLIPS__DESC'] = 'Entferne alle Werkbänke von deiner Karte',
 
     ['MENU__DIST'] = 'Entfernung: %gm',
 
-    ['MENU__PLANT__ID'] = 'Pflanze: %s',
-    ['MENU__TABLE__ID'] = 'Tisch: %s',
+    ['MENU__TABLE__ID'] = 'Werkbank: %s',
 
     ['MENU__OWNER'] = 'Besitzer',
     ['MENU__OWNER__META'] = 'Klicken, um die Besitzer-ID zu kopieren',
 
-    ['MENU__PLANT__LOCATION'] = 'Standort',
+    ['MENU__TABLE__LOCATION'] = 'Standort',
     ['MENU__LOCATION__DESC'] = 'Straße: %s | Koordinaten: (%g, %g, %g)',
-    ['MENU__LOCATION__META'] = 'Klicken, um Koordinaten zu kopieren',
+    ['MENU__LOCATION__META'] = 'Klicken, um die Koordinaten zu kopieren',
 
-    ['MENU__PLANT__TELEPORT'] = 'Zur Pflanze teleportieren',
-    ['MENU__PLANT__TELEPORT__DESC'] = 'Zum Pflanzenstandort teleportieren',
-
-    ['MENU__TABLE__TELEPORT'] = 'Zum Tisch teleportieren',
-    ['MENU__TABLE__TELEPORT__DESC'] = 'Zum Tischstandort teleportieren',
+    ['MENU__TABLE__TELEPORT'] = 'Zu Werkbank teleportieren',
+    ['MENU__TABLE__TELEPORT__DESC'] = 'Zum Standort der Werkbank teleportieren',
 
     ['MENU__ADD__BLIP'] = 'Zur Karte hinzufügen',
-    ['MENU__ADD__PLANT__BLIP__DESC'] = 'Einen Blip für diese Pflanze erstellen',
-    ['MENU__ADD__TABLE__BLIP__DESC'] = 'Einen Blip für diesen Tisch erstellen',
+    ['MENU__ADD__TABLE__BLIP__DESC'] = 'Einen Blip für diese Werkbank erstellen',
 
-    ['MENU__TABLE__DESTROY'] = 'Tisch zerstören',
-    ['MENU__TABLE__DESTROY__DESC'] = 'Diesen Tisch zerstören',
+    ['MENU__TABLE__DESTROY'] = 'Werkbank zerstören',
+    ['MENU__TABLE__DESTROY__DESC'] = 'Diese Werkbank zerstören',
 
-    ['NOTIFICATION__DEALER__SELL__SUCCESS'] = 'Du hast erfolgreich %gx %s für $%g verkauft',
-    ['NOTIFICATION__DEALER__BUY__SUCCESS'] = 'Du hast erfolgreich %gx %s für $%g gekauft',
-    ['NOTIFICATION__NO__MONEY'] = 'Du hast nicht genug Geld dabei',
-    ['NOTIFICATION__BUY__SUCCESS'] = 'Du hast erfolgreich etwas %s gekauft',
-    ['NOTIFICATION__DEALER__NO__ITEM'] = 'Du hast nicht genug Gegenstände zum Verkaufen',
+    -- Target
+    -- cl_target.lua
+    ['TARGET__TABLE__LABEL'] = 'Herstellung starten',
+    ['TARGET__TABLE__REMOVE'] = 'Werkbank entfernen',
 
-    ['NOTIFICATION__IN__VEHICLE'] = 'Das kannst du in einem Fahrzeug nicht tun',
-    ['NOTIFICATION__CANT__PLACE'] = 'Das kannst du hier nicht tun',
-    ['NOTIFICATION__TO__NEAR'] = 'Du kannst das nicht so nah an einer anderen Pflanze pflanzen',
-    ['NOTIFICATION__CANCELED'] = 'Abgebrochen...',
-    ['NOTIFICATION__NO__ITEMS'] = 'Du hast keine Gegenstände, um diese Pflanze zu pflegen',
+    -- Progressbar
+    -- cl_crafting.lua
+    ['PROGRESSBAR__PLACE__TABLE'] = 'Werkbank wird platziert...',
+    ['PROGRESSBAR__CRAFT__ITEM'] = 'Herstellung...',
+    ['PROGRESSBAR__REMOVE__TABLE'] = 'Werkbank wird entfernt...',
 
-    ['NOTIFICATION__NO__AMOUNT'] = 'Du musst eine Menge eingeben',
-
-    ['NOTIFICATION__MISSING__INGIDIANT'] = 'Du hast nicht alle Zutaten',
-    ['NOTIFICATION__SKILL__SUCCESS'] = 'Du hast eine Droge verarbeitet',
-    ['NOTIFICATION__SKILL__ERROR'] = 'Du hast die falsche Taste gedrückt',
-    ['NOTIFICATION__PROCESS__FAIL'] = 'Du hast es nicht geschafft, die Droge zu verarbeiten',
-
-    ['NOTIFICATION__CALLING__COPS'] = 'Der Käufer ruft die Polizei!',
-    ['NOTIFICATION__MAX__PLANTS'] = 'Bitte kümmere dich zuerst um deine aktuellen Pflanzen',
-    ['NOTIFICATION__NOT__INTERESTED'] = 'Der Käufer ist derzeit nicht interessiert!',
-    ['NOTIFICATION__ALLREADY__SPOKE'] = 'Du hast bereits mit diesem Einheimischen gesprochen',
-    ['NOTIFICATION__NO__DRUGS'] = 'Du hast nichts, was die Person will',
-    ['NOTIFICATION__TO__LONG'] = 'Du hast Zeit verschwendet, also ist die Person gegangen',
-    ['NOTIFICATION__OFFER__REJECTED'] = 'Du hast das Angebot abgelehnt',  
-    ['NOTIFICATION__SOLD__DRUG'] = "Du hast $%g erhalten",
-    ['NOTIFICATION__SELL__FAIL'] = 'Du konntest deine %g nicht verkaufen!',
-    ['NOTIFICATION__NO__ITEM__LEFT'] = 'Du hast keine %g mehr zu verkaufen!',
-    ['NOTIFICATION__STOLEN__DRUG'] = 'Du wurdest ausgeraubt und bekommst kein Geld',
-
-    ['NOTIFICATION__DRUG__NO__EFFECT'] = 'Diese Droge hat keine Wirkung',
-    ['NOTIFICATION__DRUG__ALREADY'] = 'Du stehst bereits unter dem Einfluss einer Droge.',
-    ['NOTIFICATION__DRUG__COOLDOWN'] = 'Du musst warten, bevor du diese Droge wieder nehmen kannst',
-
-    ['NOTIFICATION__NO__PERMISSION'] = 'Du hast keine Berechtigung, dies zu tun',
-    ['NOTIFICATION__ADMINMENU__USAGE'] = 'Bitte benutze: /%s [plants/tables]',
-
-    ['NOTIFICATION__COPY__CLIPBOARD'] = 'Informationen in die Zwischenablage kopiert: %s',
-    
-    ['NOTIFICATION__TELEPORTED'] = 'Zum Standort der Entität teleportiert',
-
-    ['NOTIFICATION__PLANT__DESTROYED'] = 'Pflanze wurde erfolgreich zerstört',
-    ['NOTIFICATION__TABLE__DESTROYED'] = 'Tisch wurde erfolgreich zerstört',
-
-    ['NOTIFICATION__ADD__BLIP'] = 'Blip zur Karte hinzugefügt',
-    ['NOTIFICATION__REMOVE__BLIP'] = 'Blip von der Karte entfernt',
-
-    ['NOTIFICATION__NEED_LIGHTER'] = 'Du brauchst ein Feuerzeug, um die Pflanze zu zerstören',
-
-    ['PROGRESSBAR__SPAWN__PLANT'] = 'Pflanze...',
-    ['PROGRESSBAR__HARVEST__PLANT'] = 'Ernte...',
-    ['PROGRESSBAR__SOAK__PLANT'] = 'Bewässere...',
-    ['PROGRESSBAR__FERTILIZE__PLANT'] = 'Dünge...',
-    ['PROGRESSBAR__DESTROY__PLANT'] = 'Zerstöre...',
-
-    ['PROGRESSBAR__PLACE__TABLE'] = 'Platziere Tisch...',
-    ['PROGRESSBAR__REMOVE__TABLE'] = 'Entferne Tisch...',
-    ['PROGRESSBAR__PROCESS__DRUG'] = 'Verarbeite...',
-
-    ['INTERACTION__PLACING__TEXT'] = '[E] - Pflanze platzieren / [G] - Abbrechen',
-    ['INTERACTION__PLACING_TABLE__TEXT'] = '[E] - Tisch platzieren / [G] - Abbrechen',
-	
-    ['INTERACTION__INTERACT_TEXT'] = '[E] - Interagieren',
-
-    ['INPUT__AMOUNT__HEADER'] = 'Verarbeitung',
+    -- Input
+    -- cl_crafting.lua
+    ['INPUT__AMOUNT__HEADER'] = 'Herstellung',
     ['INPUT__AMOUNT__TEXT'] = 'Menge',
-    ['INPUT__AMOUNT__DESCRIPTION'] = 'Wie viele möchtest du verarbeiten?',
+    ['INPUT__AMOUNT__DESCRIPTION'] = 'Wie viele möchtest du herstellen?',
 
-    ['INPUT__BUY__HEADER'] = 'Kaufen',
-    ['INPUT__BUY__TEXT'] = 'Menge',
-    ['INPUT__BUY__DESCRIPTION'] = 'Wie viele %s möchtest du kaufen?',
-    ['INPUT__SELL__DESCRIPTION'] = 'Wie viele %s möchtest du verkaufen?',
+    -- Alert
+    -- cl_admin
+    ['ALERT__ADMIN__HEADER'] = 'KEINE BERECHTIGUNG',
+    ['ALERT__ADMIN__CONTENT'] = 'Füge dies deiner server.cfg-Datei hinzu, um diesem Benutzer die Berechtigung zu erteilen:\nadd_ace identifier.%s it-crafting allow #%s Lizenz\nUnd starte deinen Server neu, um die Änderungen zu übernehmen',
 
-    ['TARGET__DEALER__LABLE'] = 'Dealer überprüfen',
-    ['TARGET__PLANT__LABEL'] = 'Pflanze überprüfen',
-    ['TARGET__TABLE__LABEL'] = 'Tisch benutzen',
-    ['TARGET__SELL__LABEL'] = 'Sprechen',
+    ['ALTER__ADMIN__COPY'] = 'Kopieren',
+    ['ALTER__ADMIN__CANCEL'] = 'Abbrechen',
 
-    ['COMMAND__ADMINMENU'] = 'drugadmin',
-    ['COMMAND__GROUNDHASH'] = 'getGroundHash',
+    -- Interaction
+    -- cl_crafting.lua
+    ['INTERACTION__PLACING_TABLE__TEXT'] = "[E] - Place Table | [G] - Cancle",
 
-    ['COMMAND__GROUNDHASH__HELP'] = 'Aktuellen Ground-Hash abrufen'
+    -- Command
+    -- sv_admin.lua
+    ['COMMAND__ADMINMENU'] = 'craft-admin',
+    ['COMMAND__ADMINMENU__USAGE'] = 'Das Crafting-Admin-Menü öffnen'
 }

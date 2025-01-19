@@ -103,7 +103,7 @@ lib.callback.register('it-crafting:server:getTableByOwner', function(source)
         end
     end
 
-    if next(temp) then
+    if not next(temp) then
         if Config.Debug then lib.print.error('[getTableByOwner] - Table with Owner:', source, 'not found') end
         return nil
     end
@@ -350,7 +350,7 @@ RegisterNetEvent('it-crafting:server:craftItem', function(type, data)
 
     local failChance = math.random(1, 100)
     if failChance <= recipe.failChance then
-        ShowNotification(source, _U('NOTIFICATION__PROCESS__FAIL'), 'error')
+        ShowNotification(source, _U('NOTIFICATION__CRAFT__FAIL'), 'error')
         for k,v in pairs(recipe.ingrediants) do
             it.removeItem(source, k, v.amount)
         end

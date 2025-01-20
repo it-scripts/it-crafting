@@ -23,6 +23,30 @@ RegisterNetEvent('it-crafting:client:showRecipesMenu', function(type, data)
         })
     end
 
+    if not Config.Target and type == 'table' then
+        table.insert(options, {
+            title = _U('TARGET__TABLE__REMOVE'),
+            icon = 'fa-trash',
+            onSelect = function(_)
+                lib.callback("it-crafting:server:getDataById", false, function(tableData)
+                    if not tableData then
+                        lib.print.error('[it-crafting] Unable to get table data by network id')
+                    else
+                        local extendedCraftingData = nil
+                        extendedCraftingData = Config.CraftingTables[tableData.tableType]
+                        if extendedCraftingData.restricCrafting['onlyOwnerRemove'] then
+                            if tableData.owner ~= it.getCitizenId() then
+                                ShowNotification(nil, _U('NOTIFICATION__NOT__ALLOWED'), 'error')
+                                return
+                            end
+                            TriggerEvent('it-crafting:client:removeTable', {tableId = tableId})
+                        end
+                    end
+                end, 'table', tableId)
+            end,
+        })
+    end
+
     lib.registerContext({
         id = "it-crafting-recipes-menu",
         title = _U('MENU__CRAFTING__TITLE'),

@@ -216,12 +216,16 @@ local setupTables = function()
 
 
             local recipes = Config.CraftingTables[v.type].recipes
-            for recipeId, recipeData in pairs(recipes) do
+            for recipeId, _ in pairs(recipes) do
                 if currentTable:getRecipeData(recipeId) then
                     if Config.Debug then lib.print.info('[setupTables] - Table with ID:', v.id, 'already has recipe with ID:', recipeId) end
                 else
-                    local recipe = Recipe:new(recipeId, recipeData)
-                    currentTable:addRecipe(recipeId, recipe)
+                    if not Config.Recipes[recipeId] then
+                        if Config.Debug then lib.print.error('[setupTables] - Recipe with ID:', recipeId, 'not found') end
+                    else
+                        local recipe = Recipe:new(recipeId, Config.Recipes[recipeId])
+                        currentTable:addRecipe(recipeId, recipe)
+                    end
                 end
             end
 
@@ -255,8 +259,12 @@ local setupPoints = function()
             if currentPoint:getRecipeData(recipeId) then
                 if Config.Debug then lib.print.info('[setupPoints] - Point with ID:', pointId, 'already has recipe with ID:', recipeId) end
             else
-                local recipe = Recipe:new(recipeId, recipeData)
-                currentPoint:addRecipe(recipeId, recipe)
+                if not Config.Recipes[recipeId] then
+                    if Config.Debug then lib.print.error('[setupTables] - Recipe with ID:', recipeId, 'not found') end
+                else
+                    local recipe = Recipe:new(recipeId, Config.Recipes[recipeId])
+                    currentPoint:addRecipe(recipeId, recipe)
+                end
             end
         end
 

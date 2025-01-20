@@ -54,7 +54,7 @@ Config.MinDistanceToTable = 3.0 -- Minimum distance to a table to interact with 
 -- Determite zones to restrict the use of the crafting tables to specific zones or areas.
 
 Config.Zones = {
-    ['cratin_zone_one'] = { -- Zone id (Musst be unique)
+    ['crafting_zone_one'] = { -- Zone id (Musst be unique)
         points = {
             vec3(2031.0, 4853.0, 43.0),
             vec3(2007.0, 4877.0, 43.0),
@@ -64,7 +64,6 @@ Config.Zones = {
             vec3(2057.0, 4878.0, 43.0),
         },
         thickness = 4.0,
-        growMultiplier = 2, -- GlobalGrowTime / growMultiplier = Time in minutes for a plant to grow in this zone
         
         blip = {
             display = true, -- Display blip on map
@@ -72,6 +71,39 @@ Config.Zones = {
             displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
             displayText = 'Crafting Zone',
         },
+    },
+}
+
+
+Config.Recipes = {
+    ['joint_lemon_haze'] = {
+        label = 'Joint lemon haze',
+        ingrediants = {
+            ['weed_lemonhaze'] = {amount = 3, remove = true},
+            ['paper'] = {amount = 1, remove = true}
+        },
+        outputs = {
+            ['joint'] = 2
+        },
+        processTime = 15,
+        failChance = 15,
+        showIngrediants = true,
+        animation = {
+            dict = 'anim@amb@drug_processors@coke@female_a@idles',
+            anim = 'idle_a',
+        },
+        particlefx = {
+            dict = 'scr_ar_planes',
+            particle = 'scr_ar_trail_smoke_slow',
+            color = {r = 255, g = 255, b = 153},
+            offset = {x = 0.0, y = -1.5, z = 1.0},
+            scale = 0.5,
+        },
+        skillCheck = {
+            enabled = true,
+            difficulty = {'easy', 'easy', 'medium', 'easy'},
+            keys = {'w', 'a', 's', 'd'}
+        }
     },
 }
 
@@ -101,37 +133,7 @@ Config.CraftingPoints = {
             displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
             displayText = 'Crafting Point',
         },
-        recipes = {
-            ['point_joint_lemon_haze'] = {
-                label = 'Joint lemon haze',
-                ingrediants = {
-                    ['weed_lemonhaze'] = {amount = 3, remove = true},
-                    ['paper'] = {amount = 1, remove = true}
-                },
-                outputs = {
-                    ['joint'] = 2
-                },
-                processTime = 15,
-                failChance = 15,
-                showIngrediants = true,
-                animation = {
-                    dict = 'anim@amb@drug_processors@coke@female_a@idles',
-                    anim = 'idle_a',
-                },
-                particlefx = {
-                    dict = 'scr_ar_planes',
-                    particle = 'scr_ar_trail_smoke_slow',
-                    color = {r = 255, g = 255, b = 153},
-                    offset = {x = 0.0, y = -1.5, z = 1.0},
-                    scale = 0.5,
-                },
-                skillCheck = {
-                    enabled = true,
-                    difficulty = {'easy', 'easy', 'medium', 'easy'},
-                    keys = {'w', 'a', 's', 'd'}
-                }
-            },
-        }
+        recipes = {'joint_lemon_haze'}
     },
 }
 
@@ -161,37 +163,7 @@ Config.CraftingTables = { -- Create processing table
             displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
             displayText = 'Crafting Table',
         },
-        recipes = {
-            ['table_joint_lemon_haze'] = {
-                label = 'Joint lemon haze',
-                processTime = 15,
-                failChance = 15,
-                showIngrediants = true,
-                ingrediants = {
-                    ['weed_lemonhaze'] = {amount = 3, remove = true},
-                    ['paper'] = {amount = 1, remove = true}
-                },
-                outputs = {
-                    ['joint'] = 2
-                },
-                animation = {
-                    dict = 'anim@amb@drug_processors@coke@female_a@idles',
-                    anim = 'idle_a',
-                },
-                particlefx = { -- Currently in Beta and not fully working
-                    dict = 'scr_ar_planes',
-                    particle = 'scr_ar_trail_smoke_slow',
-                    color = {r = 255, g = 255, b = 153},
-                    offset = {x = 0.0, y = -1.5, z = 1.0},
-                    scale = 0.5,
-                },
-                skillCheck = {
-                    enabled = true,
-                    difficulty = {'easy', 'easy', 'medium', 'easy'},
-                    keys = {'w', 'a', 's', 'd'}
-                }
-            },
-        }
+        recipes = {'joint_lemon_haze'}
     }
 }
 

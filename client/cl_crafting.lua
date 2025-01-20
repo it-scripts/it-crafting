@@ -159,7 +159,7 @@ RegisterNetEvent('it-crafting:client:placeCraftingTable', function(tableItem, me
     TriggerEvent('it-crafting:client:syncRestLoop', true)
     lib.showTextUI(_U('INTERACTION__PLACING_TABLE__TEXT'), {
         position = "left-center",
-        icon = "spoon",
+        icon = "circle-info",
     })
 
     -- Placing Table allways on the ground
@@ -317,9 +317,10 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
         TriggerServerEvent("it-crafting:server:syncparticlefx", true, craftingData.id, craftingData.netId, recipe.particlefx)
     end
 
+    if Config.Debug then lib.print.info('Crafting with Recipe:', recipe) end
+
     if recipe.skillCheck.enabled then
         for i = 1, amount do
-
             -- Check if the player can carry then item
             if Config.UseWeightSystem then
                 if it.canCarryItems(recipe.outputs) then

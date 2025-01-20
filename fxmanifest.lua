@@ -31,6 +31,7 @@ client_scripts {
     'client/cl_crafting.lua',
     'client/cl_target.lua',
     'client/cl_blips.lua',
+    'client/cl_notarget.lua',
     'client/cl_admin.lua',
 }
 

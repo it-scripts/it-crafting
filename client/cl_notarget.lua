@@ -68,7 +68,7 @@ CreateThread(function()
                 if closestPoint and pointDistance <= 2.0 then
                     it.DrawText3D(closestPoint.coords.x, closestPoint.coords.y, closestPoint.coords.z + 0.5, 'Press ~g~E~w~ to interact with point')
                     if IsControlJustPressed(0, 38) then
-                        TriggerEvent('it-crafting:client:showRecipesMenu', 'point', {pointId = closestPoint.id})
+                        TriggerEvent('it-crafting:client:showRecipesMenu', 'point', {tableId = closestPoint.id})
                     end
                 end
             end

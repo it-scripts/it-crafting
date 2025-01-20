@@ -34,7 +34,7 @@ local function addTableBlip(blipData)
         local blip = AddBlipForCoord(blipData.coords.x, blipData.coords.y, blipData.coords.z)
         SetBlipSprite(blip, blipData.sprite)
         SetBlipDisplay(blip, 2)
-        SetBlipScale(blip, 0.8)
+        SetBlipScale(blip, blipData.scale)
         SetBlipColour(blip, blipData.displayColor)
         SetBlipAsShortRange(blip, true)
         BeginTextCommandSetBlipName('STRING')
@@ -49,7 +49,7 @@ local function addAdminBlip(blipData)
         local blip = AddBlipForCoord(blipData.coords.x, blipData.coords.y, blipData.coords.z)
         SetBlipSprite(blip, blipData.sprite)
         SetBlipDisplay(blip, 2)
-        SetBlipScale(blip, 0.8)
+        SetBlipScale(blip, blipData.scale)
         SetBlipColour(blip, blipData.displayColor)
         SetBlipAsShortRange(blip, true)
         BeginTextCommandSetBlipName('STRING')
@@ -75,7 +75,7 @@ CreateThread(function()
             local blip = AddBlipForCoord(center.x, center.y, 200)
             SetBlipSprite(blip, v.blip.sprite)
             SetBlipDisplay(blip, 2)
-            SetBlipScale(blip, 0.8)
+            SetBlipScale(blip, v.blip.scale)
             SetBlipColour(blip, v.blip.displayColor)
             SetBlipAsShortRange(blip, true)
             BeginTextCommandSetBlipName("STRING")
@@ -90,7 +90,7 @@ CreateThread(function()
             local blip = AddBlipForCoord(pointData.coords.x, pointData.coords.y, pointData.coords.z)
             SetBlipSprite(blip, pointData.blip.sprite)
             SetBlipDisplay(blip, 2)
-            SetBlipScale(blip, 0.8)
+            SetBlipScale(blip, pointData.blip.scale)
             SetBlipColour(blip, pointData.blip.displayColor)
             SetBlipAsShortRange(blip, true)
             BeginTextCommandSetBlipName('STRING')
@@ -111,6 +111,7 @@ CreateThread(function()
                 display = extendedTableData.blip.display,
                 displayColor = extendedTableData.blip.displayColor,
                 displayText = extendedTableData.blip.displayText,
+                scale = extendedTableData.blip.scale,
                 id = tableData.id
             }
             addTableBlip(blipData)
@@ -133,6 +134,7 @@ RegisterNetEvent('it-crafting:client:addTableBlip', function(tableType, tableId)
         display = extendedTableData.blip.display,
         displayColor = extendedTableData.blip.displayColor,
         displayText = extendedTableData.blip.displayText,
+        scale = extendedTableData.blip.scale,
         id = tableData.id
     }
     addTableBlip(blipData)
@@ -156,6 +158,7 @@ RegisterNetEvent('it-crafting:client:addAllAdminBlips', function()
             display = extendedTableData.blip.display,
             displayColor = extendedTableData.blip.displayColor,
             displayText = extendedTableData.blip.displayText,
+            scale = extendedTableData.blip.scale,
             id = tableData.id
         }
         addAdminBlip(blipData)
@@ -190,6 +193,7 @@ RegisterNetEvent('it-crafting:client:addAdminBlip', function(tableId)
         display = extendedTableData.blip.display,
         displayColor = extendedTableData.blip.displayColor,
         displayText = extendedTableData.blip.displayText,
+        scale = extendedTableData.blip.scale,
         id = tableData.id
     }
     addAdminBlip(blipData)

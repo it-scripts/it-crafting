@@ -24,7 +24,7 @@ Locales = Locales or {}
 
 Config.Framework = 'autodetect' -- Choose your framework ('qb-core', 'es_extended', 'ND_Core' 'autodetect')
 Config.Inventory = 'autodetect' -- Choose your inventory ('ox_inventory', 'qb-inventory', 'es_extended', 'origen_inventory', 'codem-inventory', 'autodetect')
-Config.Target = 'autodetect' -- false -- Target system ('qb-target', 'ox_target' or false to disable)
+Config.Target = 'autodetect' -- false -- Target system ('ox_target' or false to disable)
 
 --[[
     Here you can set the language for the script, you can choose between 'en', 'es', 'de'
@@ -69,6 +69,7 @@ Config.Zones = {
             display = true, -- Display blip on map
             sprite = 446, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
             displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
+            scale = 0.8,
             displayText = 'Crafting Zone',
         },
     },
@@ -76,14 +77,36 @@ Config.Zones = {
 
 
 Config.Recipes = {
-    ['joint_lemon_haze'] = {
-        label = 'Joint lemon haze',
+    ['lockpick'] = {
+        label = 'Lockpick',
         ingrediants = {
-            ['weed_lemonhaze'] = {amount = 3, remove = true},
-            ['paper'] = {amount = 1, remove = true}
+            ['scrapmetal'] = {amount = 3, remove = true},
+            ['WEAPON_HAMMER'] = {amount = 1, remove = false}
         },
         outputs = {
-            ['joint'] = 2
+            ['lockpick'] = 2
+        },
+        processTime = 15,
+        failChance = 15,
+        showIngrediants = false,
+        animation = {
+            dict = 'anim@amb@drug_processors@coke@female_a@idles',
+            anim = 'idle_a',
+        },
+        skillCheck = {
+            enabled = true,
+            difficulty = {'easy', 'easy', 'medium', 'easy'},
+            keys = {'w', 'a', 's', 'd'}
+        }
+    },
+    ['bandage'] = {
+        label = 'Bandage',
+        ingrediants = {
+            ['cloth'] = {amount = 3, remove = true},
+            ['scissors'] = {amount = 1, remove = false}
+        },
+        outputs = {
+            ['bandage'] = 2
         },
         processTime = 15,
         failChance = 15,
@@ -92,15 +115,8 @@ Config.Recipes = {
             dict = 'anim@amb@drug_processors@coke@female_a@idles',
             anim = 'idle_a',
         },
-        particlefx = {
-            dict = 'scr_ar_planes',
-            particle = 'scr_ar_trail_smoke_slow',
-            color = {r = 255, g = 255, b = 153},
-            offset = {x = 0.0, y = -1.5, z = 1.0},
-            scale = 0.5,
-        },
         skillCheck = {
-            enabled = true,
+            enabled = false,
             difficulty = {'easy', 'easy', 'medium', 'easy'},
             keys = {'w', 'a', 's', 'd'}
         }
@@ -116,24 +132,45 @@ Config.Recipes = {
 -- │                                 |___/                              │
 -- └────────────────────────────────────────────────────────────────────┘
 Config.CraftingPoints = {
-    ['crafting_point_one'] = {
-        coords = vector4(210.1188, -932.9069, 29.6918, 58.0372),
-        zone = vector4(2.0, 1.0, 2.0, 90),
+    ['crafting_point_one'] = { -- Crafting point id (Musst be unique)
+        coords = vector4(-1146.2688, -2002.2002, 13.2023, 312.1676),
+        zone = vector4(3.5, 1.0, 1.0, 0),
         label = 'Crafting Point', -- Label for the table
-        model = 'v_res_tre_table2', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
+        model = nil, -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         restricCrafting = {
-            ['onlyOnePlayer'] = true,
-            ['onlyOwner'] = false,
-            ['zones'] = {},
-            ['jobs'] = {}
+            ['onlyOnePlayer'] = true, -- true/false
+            ['onlyOwner'] = false, -- true/false
+            ['zones'] = {}, -- Zones where the table can be used
+            ['jobs'] = {} -- Jobs that can use the table
         },
         blip = {
             display = true, -- Display blip on map
             sprite = 446, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
             displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
+            scale = 0.8,
             displayText = 'Crafting Point',
         },
-        recipes = {'joint_lemon_haze'}
+        recipes = {'lockpick', 'bandage'}
+    },
+    ['crafting_point_two'] = { -- Crafting point id (Musst be unique)
+        coords = vector4(-517.4920, -1734.6323, 18.3498, 56.8511),
+        zone = vector4(2.0, 1.0, 1.0, 90.0),
+        label = 'Crafting Point', -- Label for the table
+        model = 'prop_tool_bench02_ld', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
+        restricCrafting = {
+            ['onlyOnePlayer'] = true, -- true/false
+            ['onlyOwner'] = false, -- true/false
+            ['zones'] = {}, -- Zones where the table can be used
+            ['jobs'] = {} -- Jobs that can use the table
+        },
+        blip = {
+            display = false, -- Display blip on map
+            sprite = 446, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
+            displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
+            scale = 0.8,
+            displayText = 'Crafting Point',
+        },
+        recipes = {'lockpick'}
     },
 }
 
@@ -148,7 +185,7 @@ Config.CraftingPoints = {
 Config.CraftingTables = { -- Create processing table
     ['simple_crafting_table'] = {
         zone = vector4(2.0, 1.0, 2.0, 90.0),
-        label = 'Weed Processing Table', -- Label for the table
+        label = 'Crafting Table', -- Label for the table
         model = 'prop_tool_bench02_ld', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         restricCrafting = {
             ['onlyOnePlayer'] = true, -- Only one player can use the table at a time
@@ -161,9 +198,10 @@ Config.CraftingTables = { -- Create processing table
             display = true, -- Display blip on map
             sprite = 446, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
             displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
+            scale = 0.8,
             displayText = 'Crafting Table',
         },
-        recipes = {'joint_lemon_haze'}
+        recipes = {'lockpick', 'bandage'}
     }
 }
 

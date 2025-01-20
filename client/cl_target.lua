@@ -127,8 +127,8 @@ local function createPointBoxTarget(targetType, targetData)
 
         local boxZone = exports.ox_target:addBoxZone({
             coords = targetData.coords,
-            size = targetData.size,
-            rotation = targetData.rotation,
+            size = vector3(targetData.size.x, targetData.size.y, targetData.size.z),
+            rotation = (targetData.rotation + targetData.size.w),
             debug = Config.DebugPoly,
             drawSprite = true,
             options = options,
@@ -193,7 +193,7 @@ local function createPointBoxTarget(targetType, targetData)
 
         exports['qb-target']:AddBoxZone(targetData.id, vector3(targetData.coords.x, targetData.coords.y, targetData.coords.z + (targetData.size.z / 2)), targetData.size.x, targetData.size.y, {
             name = targetData.id,
-            heading = (targetData.rotation + 90),
+            heading = (targetData.rotation + targetData.size.w),
             debugPoly = Config.DebugPoly,
             maxZ = targetData.coords.z + (targetData.size.z / 2),
             minZ = targetData.coords.z,

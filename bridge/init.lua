@@ -282,6 +282,12 @@ local function detectTargetSystem(target)
         end
     end
 
+
+    if not target then 
+        it.target = nil
+        return 'none'
+    end
+
     if target == 'autodetect' then
         local qb = detectQbTarget()
         if qb then
@@ -312,8 +318,6 @@ local function detectTargetSystem(target)
                     it.target = 'ox_target'
                     return ox
                 end
-            else
-                return false
             end
         end
         return false

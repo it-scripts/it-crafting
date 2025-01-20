@@ -126,7 +126,7 @@ local function createPointBoxTarget(targetType, targetData)
         end
 
         local boxZone = exports.ox_target:addBoxZone({
-            coords = targetData.coords,
+            coords = vector3(targetData.coords.x, targetData.coords.y, targetData.coords.z + (targetData.size.z / 2)),
             size = vector3(targetData.size.x, targetData.size.y, targetData.size.z),
             rotation = (targetData.rotation + targetData.size.w),
             debug = Config.DebugPoly,

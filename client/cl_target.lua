@@ -73,7 +73,7 @@ local function createPointBoxTarget(targetType, targetData)
                             end
                         end, 'table', targetData.id)
                     end,
-                    distance = 1.5
+                    distance = targetData.interactDistance
                 },
                 {
                     label = _U('TARGET__TABLE__REMOVE'),
@@ -96,7 +96,7 @@ local function createPointBoxTarget(targetType, targetData)
                             end
                         end, 'table', targetData.id)
                     end,
-                    distance = 1.5
+                    distance = targetData.interactDistance
                 }
             }
         elseif targetType == 'point' then
@@ -120,19 +120,19 @@ local function createPointBoxTarget(targetType, targetData)
                             end
                         end, 'point', targetData.id)
                     end,
-                    distance = 1.5
+                    distance = targetData.interactDistance
                 }
             }
         end
 
         local boxZone = exports.ox_target:addBoxZone({
             coords = vector3(targetData.coords.x, targetData.coords.y, targetData.coords.z + (targetData.size.z / 2)),
-            size = vector3(targetData.size.x, targetData.size.y, targetData.size.z),
-            rotation = (targetData.rotation + targetData.size.w),
+            size = targetData.size,
+            rotation = (targetData.rotation + targetData.zoneRotation),
             debug = Config.DebugPoly,
-            drawSprite = true,
+            drawSprite = targetData.drawSprite,
             options = options,
-            distance = 1.5,
+            distance = targetData.interactDistance,
         })
 
         return boxZone
@@ -199,7 +199,7 @@ local function createPointBoxTarget(targetType, targetData)
             minZ = targetData.coords.z,
         }, {
             options = options,
-            distance = 5.0
+            distance = targetData.interactDistance,
         })
         return targetData.id
     else
@@ -210,10 +210,13 @@ end
 local function createCraftingPointZones()
     for pointId, pointData in pairs(Config.CraftingPoints) do
         local boxZoneData = {
+            id = pointId,
             coords = vector3(pointData.coords.x, pointData.coords.y, pointData.coords.z),
-            size = pointData.zone,
-            rotation = pointData.coords.w,
-            id = pointId
+            rotation = pointData.pointData.w,
+            size = pointData.target.size or vector3(1.0, 1.0, 1.0),
+            zoneRotation = pointData.target.rotation or 0,
+            drawSprite = pointData.target.drawSprite or false,
+            interactDistance = pointData.target.interactDistance or 1.5,
         }
 
         local boxZone = createPointBoxTarget('point', boxZoneData)
@@ -229,10 +232,13 @@ RegisterNetEvent('it-crafting:client:addTableZone', function(tableType, tableId)
     if not craftingPointsZones[tableData.id] then
         local extendedTableData = Config.CraftingTables[tableType]
         local pointData = {
+            id =  tableData.id,
             coords = tableData.coords,
-            size = extendedTableData.zone,
             rotation = tableData.rotation,
-            id = tableData.id
+            size = extendedTableData.target.size or vector3(1.0, 1.0, 1.0),
+            zoneRotation = extendedTableData.target.rotation or 0,
+            drawSprite = extendedTableData.target.drawSprite or false,
+            interactDistance = extendedTableData.target.interactDistance or 1.5,
         }
         local boxZone = createPointBoxTarget('table', pointData)
         if it.target == 'ox_target' then
@@ -273,10 +279,13 @@ CreateThread(function()
         if not craftingTablesZones[tableData.id] then
             local extendedTableData = Config.CraftingTables[tableData.tableType]
             local pointData = {
+                id =  tableData.id,
                 coords = tableData.coords,
-                size = extendedTableData.zone,
                 rotation = tableData.rotation,
-                id = tableData.id
+                size = extendedTableData.target.size or vector3(1.0, 1.0, 1.0),
+                zoneRotation = extendedTableData.target.rotation or 0,
+                drawSprite = extendedTableData.target.drawSprite or false,
+                interactDistance = extendedTableData.target.interactDistance or 1.5,
             }
             local boxZone = createPointBoxTarget('table', pointData)
 

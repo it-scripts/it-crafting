@@ -134,7 +134,12 @@ Config.Recipes = {
 Config.CraftingPoints = {
     ['crafting_point_one'] = { -- Crafting point id (Musst be unique)
         coords = vector4(-1146.2688, -2002.2002, 13.2023, 312.1676),
-        zone = vector4(3.5, 1.0, 1.0, 0),
+        target = {
+            size = vector3(3.5, 1.0, 1.0),
+            rotation = 0.0,
+            drawSprite = true,
+            interactDistance = 1.5,
+        },
         label = 'Crafting Point', -- Label for the table
         model = nil, -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         restricCrafting = {
@@ -154,7 +159,12 @@ Config.CraftingPoints = {
     },
     ['crafting_point_two'] = { -- Crafting point id (Musst be unique)
         coords = vector4(-517.4920, -1734.6323, 18.3498, 56.8511),
-        zone = vector4(2.0, 1.0, 1.0, 90.0),
+        target = {
+            size = vector3(2.0, 1.0, 1.0),
+            rotation = 90.0,
+            drawSprite = true,
+            interactDistance = 1.5,
+        },
         label = 'Crafting Point', -- Label for the table
         model = 'prop_tool_bench02_ld', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         restricCrafting = {
@@ -184,7 +194,12 @@ Config.CraftingPoints = {
 -- └─────────────────────────────────────────────────────────────────────┘
 Config.CraftingTables = { -- Create processing table
     ['simple_crafting_table'] = {
-        zone = vector4(2.0, 1.0, 2.0, 90.0),
+        target = {
+            size = vector3(2.0, 1.0, 2.0),
+            rotation = 90.0,
+            drawSprite = true,
+            interactDistance = 1.5,
+        },
         label = 'Crafting Table', -- Label for the table
         model = 'prop_tool_bench02_ld', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         restricCrafting = {
@@ -214,5 +229,5 @@ Config.ManualDatabaseSetup = false -- Set to true to disable the automatic datab
 
 Config.EnableVersionCheck = true -- Enable version check
 Config.Branch = 'main' -- Set to 'master' to use the master branch, set to 'development' to use the dev branch
-Config.Debug = true -- Set to true to enable debug mode
-Config.DebugPoly = true -- Set to true to enable debug mode for PolyZone
+Config.Debug = false -- Set to true to enable debug mode
+Config.DebugPoly = false -- Set to true to enable debug mode for PolyZone

@@ -344,6 +344,12 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
         RemoveAnimDict(recipe.animation.dict)
     else
         for i = 1, amount do
+            if Config.UseWeightSystem then
+                if it.canCarryItems(recipe.outputs) then
+                    ShowNotification(nil, _U('NOTIFICATION__CANT__CARRY'), 'error')
+                    break
+                end
+            end
             if lib.progressBar({
                 duration = recipe.processTime * 1000,
                 label = _U('PROGRESSBAR__CRAFT__ITEM'),

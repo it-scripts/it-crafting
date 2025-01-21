@@ -323,7 +323,7 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
         for i = 1, amount do
             -- Check if the player can carry then item
             if Config.UseWeightSystem then
-                if it.canCarryItems(recipe.outputs) then
+                if not it.canCarryItems(recipe.outputs) then
                     ShowNotification(nil, _U('NOTIFICATION__CANT__CARRY'), 'error')
                     break
                 end
@@ -345,7 +345,7 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
     else
         for i = 1, amount do
             if Config.UseWeightSystem then
-                if it.canCarryItems(recipe.outputs) then
+                if not it.canCarryItems(recipe.outputs) then
                     ShowNotification(nil, _U('NOTIFICATION__CANT__CARRY'), 'error')
                     break
                 end
@@ -386,7 +386,7 @@ RegisterNetEvent('it-crafting:client:removeTable', function(args)
     local entity = NetworkGetEntityFromNetworkId(tableData.netId)
 
     if Config.UseWeightSystem then
-        if it.canCarryItem(tableData.tableType, 1) then
+        if not it.canCarryItem(tableData.tableType, 1) then
             ShowNotification(nil, _U('NOTIFICATION__CANT__CARRY'), 'error')
             return
         end

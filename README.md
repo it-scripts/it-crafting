@@ -58,7 +58,7 @@ Our script is fully configurable, allowing server admins to customize every aspe
 
 <div align="center">
 
-[![Crafting Documentation Banner](https://i.imgur.com/Er2hqzn.png)](https://docs.it-scripts.com/)
+[![Crafting Documentation Banner](https://i.imgur.com/Er2hqzn.png)](https://docs.it-scripts.com/it-crafting)
 
 ## You can find the install guide in the [documentation](https://docs.it-scripts.com/scripts/it-crafting)
 <br>
@@ -66,7 +66,8 @@ Our script is fully configurable, allowing server admins to customize every aspe
 
 <div align="center">
 
-[![Crafting Preview Banner](https://i.imgur.com/Ap8LwL5.png)](https://docs.it-scripts.com/)
+[![Crafting Preview Banner](https://i.imgur.com/Ap8LwL5.png)](https://docs.it-scripts.com/it-crafting/config-preview)
+## You can find the preview in the [documentation](https://docs.it-scripts.com/it-crafting/config-preview)
 <br>
 </div>
 

@@ -43,7 +43,7 @@ local function checkforZones(coords, targetZones)
                     return id
                 end
             end
-        end      
+        end
     end
     return nil
 end
@@ -94,14 +94,17 @@ local placeCraftingTable = function(ped, tableItem, coords, rotation, metadata)
         end
     end
 
-    local targetZone = checkforZones(coords, extendedItemData.restricCrafting['zones'])
-    if targetZone then
-        ShowNotification(nil, _U('NOTIFICATION__NOT__ALLOWED__ZONE'), 'error')
-        TriggerEvent('it-crafting:client:syncRestLoop', false)
-        if it.inventory == 'ox' then
-            it.giveItem(tableItem, 1, metadata)
+
+    if extendedItemData.restricCrafting['zones'] and #extendedItemData.restricCrafting['zones'] > 0 then
+        local targetZone = checkforZones(coords, extendedItemData.restricCrafting['zones'])
+        if not targetZone then
+            ShowNotification(nil, _U('NOTIFICATION__NOT__ALLOWED__ZONE'), 'error')
+            TriggerEvent('it-crafting:client:syncRestLoop', false)
+            if it.inventory == 'ox' then
+                it.giveItem(tableItem, 1, metadata)
+            end
+            return
         end
-        return
     end
 
     RequestAnimDict('amb@medic@standing@kneel@base')

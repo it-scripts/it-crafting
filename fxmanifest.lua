@@ -25,8 +25,6 @@ client_scripts {
 
     'bridge/**/client.lua',
 
-    -- 'client/cl_notarget.lua',
-
     'client/cl_menus.lua',
     'client/cl_crafting.lua',
     'client/cl_target.lua',

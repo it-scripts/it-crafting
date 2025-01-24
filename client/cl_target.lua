@@ -212,7 +212,7 @@ local function createCraftingPointZones()
         local boxZoneData = {
             id = pointId,
             coords = vector3(pointData.coords.x, pointData.coords.y, pointData.coords.z),
-            rotation = pointData.pointData.w,
+            rotation = pointData.coords.w,
             size = pointData.target.size or vector3(1.0, 1.0, 1.0),
             zoneRotation = pointData.target.rotation or 0,
             drawSprite = pointData.target.drawSprite or false,

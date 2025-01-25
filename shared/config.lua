@@ -144,8 +144,6 @@ Config.CraftingPoints = {
         model = nil, -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
         restricCrafting = {
             ['onlyOnePlayer'] = true, -- true/false
-            ['onlyOwner'] = false, -- true/false
-            ['zones'] = {}, -- Zones where the table can be used
             ['jobs'] = {} -- Jobs that can use the table
         },
         blip = {

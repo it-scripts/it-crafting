@@ -34,7 +34,7 @@ it-crafting is a lightweight crafting system for FiveM servers. Originally used 
 - `⚙️` **| [ox_target](https://github.com/overextended/ox_target)** *
 - ~~`⚙️` **| [qb-target](https://github.com/qbcore-framework/qb-target)** *~~ (The script currently does not work with qb-target)
 
-* Optional
+* Optional | Only required if you want to use the target system
 
 <div align="center">
 
@@ -74,8 +74,10 @@ Our script is fully configurable, allowing server admins to customize every aspe
 
 <div align="center">
 
-[![Crafting Schowcase Banner](https://i.imgur.com/ECheb1f.png)](https://www.youtube.com)
-## Comming soon
+[![Crafting Schowcase Banner](https://i.imgur.com/ECheb1f.png)](https://youtu.be/OVcg1ZuuzA4)
+[![Crafting YouTube Banner](https://img.youtube.com/vi/OVcg1ZuuzA4/maxresdefault.jpg)](https://youtu.be/OVcg1ZuuzA4)
+
+**[VIEW ON YOUTUBE](https://youtu.be/OVcg1ZuuzA4)**
 
 <br>
 <table><tr><td><h4 align='center'>Legal Notices</h4></tr></td>

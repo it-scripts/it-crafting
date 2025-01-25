@@ -382,11 +382,15 @@ RegisterNetEvent('it-crafting:server:craftItem', function(type, data)
             end
         end
     end
-    SendToWebhook(source, type, 'craft', craftingAction:getData())
-    
+
     for k, v in pairs(recipe.outputs) do
         it.giveItem(source, k, v)
     end
+
+    local messageData = craftingAction:getData()
+    messageData.recipe = recipe
+
+    SendToWebhook(source, type, 'craft', messageData)
 end)
 
 

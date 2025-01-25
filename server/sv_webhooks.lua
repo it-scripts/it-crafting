@@ -9,9 +9,7 @@ local webhookSettings = {
     ['name'] = 'it-crafting', -- Name for the webhook
     ['avatar'] = 'https://i.imgur.com/mbM87BJ.png', -- Avatar for the webhook
     ['urls'] = {
-        ['plant'] = nil, --'', -- Webhook URL for plant actions
-        ['table'] = nil, --'', -- Webhook URL for table actions
-        ['sell'] = nil, --'', -- Webhook URL for sell actions
+        ['crafting'] = nil, --'', -- Webhook URL for plant actions
         ['message'] = nil, -- Webhook URL for messages
     }
 }
@@ -32,8 +30,7 @@ local errors = {
 }
 
 local messagesToSend = {
-    ['plant'] = {},
-    ['table'] = {},
+    ['crafting'] = {},
 }
 
 local function buildPlaceHolderEmbed(type, messageData)
@@ -45,26 +42,7 @@ local function buildPlaceHolderEmbed(type, messageData)
             ["url"] = webhookSettings['avatar'],
         }
     }
-    if type == 'plant' then
-        embed["title"] = "Plant: "..Config.Plants[messageData.seed].label.." ("..messageData.netId..")"
-        embed["description"] = "### Plant History:\n"
-        embed["fields"] = {
-            {
-                ["name"] = "Plant Data:",
-                ["value"] = "**ID:** `"..messageData.id.."`\n"..
-                            "**Owner:** `"..messageData.owner.."`\n"..
-                            "**Coords:** `"..messageData.coords.."`\n"..
-                            "**Growtime:**`" ..(messageData.growtime).."min`\n"..
-                            "**Start Time:** <t:"..messageData.plantTime..">\n"..
-                            "**End Time:** <t:"..(messageData.plantTime + (messageData.growtime * 60))..">\n",
-                ["inline"] = false,
-            },
-        }
-        embed["footer"] = {
-            ["text"] = os.date("%c"),
-            ["icon_url"] = webhookSettings['avatar'],
-        }
-    elseif type == 'table' then
+    if type == 'table' then
         embed["title"] = "Table: "..messageData.netId
         embed["description"] = "### Table History:\n"
         embed["fields"] = {
@@ -81,15 +59,13 @@ local function buildPlaceHolderEmbed(type, messageData)
             ["text"] = os.date("%c"),
             ["icon_url"] = webhookSettings['avatar'],
         }
-    elseif type == 'sell' then
-        embed["title"] = "Drugs Sold"
-        embed["description"] = "### Info\n"
+    elseif type == 'point' then
+        embed["title"] = "Point: "..messageData.id
+        embed["description"] = "### Point History:\n"
         embed["fields"] = {
             {
-                ["name"] = "Sell Data:",
-                ["value"] = "**Item:** `"..messageData.item.."`\n"..	
-                            "**Amount:** `"..messageData.amount.."`\n"..
-                            "**Price:** `"..messageData.price.."`\n"..
+                ["name"] = "Point Data:",
+                ["value"] = "**ID:** `"..messageData.id.."`\n"..
                             "**Coords:** `"..messageData.coords.."`\n",
                 ["inline"] = false,
             },
@@ -120,6 +96,50 @@ local function getPlayerDiscordId(source)
     return discordID
 end
 
+local function sendWehookDiscord(messageId)
+    if not webhookSettings['active'] then return end
+    if not messageId then
+        if messagesToSend == nil then return end
+        for webhookType, messageList in pairs(messagesToSend) do
+            for messageId, messages in pairs(messageList) do
+                local webhookUrl = webhookSettings['urls'][webhookType]
+
+                if webhookUrl then
+                    PerformHttpRequest(webhookUrl, function(err, text, headers)
+                        if err == 200 or err == 204 then
+                            messagesToSend[webhookType][messageId] = nil
+                        else
+                            lib.print.info('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
+                            webhookSettings['urls'][webhookType] = nil
+                        end
+                    end, 'POST', json.encode({username = webhookSettings['name'], avatar_url = webhookSettings['avatar'], embeds = {messages}}), { ['Content-Type'] = 'application/json' })
+                end
+            end
+        end
+        return
+    end
+
+    -- Send the message with the given id
+    for webhookType, messageList in pairs(messagesToSend) do
+        for messageId, messages in pairs(messageList) do
+            if messageId == messageId then
+                local webhookUrl = webhookSettings['urls'][webhookType]
+
+                if webhookUrl then
+                    PerformHttpRequest(webhookUrl, function(err, text, headers)
+                        if err == 200 or err == 204 then
+                            messagesToSend[webhookType][messageId] = nil
+                        else
+                            lib.print.info('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
+                            webhookSettings['urls'][webhookType] = nil
+                        end
+                    end, 'POST', json.encode({username = webhookSettings['name'], avatar_url = webhookSettings['avatar'], embeds = {messages}}), { ['Content-Type'] = 'application/json' })
+                end
+            end
+        end
+    end
+end
+
 function SendToWebhook(source, type, action, messageData)
     if not webhookSettings['active'] then return end
     local id = messageData.id
@@ -138,73 +158,53 @@ function SendToWebhook(source, type, action, messageData)
         return
     end
 
-    local discordID = getPlayerDiscordId(source)
-
-    if type == 'sell' then
-        if webhookSettings['urls']['sell'] == nil then return end
-
-        embedMessage = buildPlaceHolderEmbed(type, messageData)
-        embedMessage["description"] = embedMessage["description"].."> [<t:"..os.time()..":d><t:"..os.time()..":t>]: <@"..discordID..">: Sold "..messageData.amount.." "..messageData.item.." for $"..messageData.price.."\n"
-        PerformHttpRequest(webhookSettings['urls']['sell'], function(err, text, headers) 
-            if err == 200 or err == 204 then
-            else
-                lib.print.info('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
-                webhookSettings['urls']['sell'] = nil
-            end
-        end, 'POST', json.encode({username = webhookSettings['name'], avatar_url = webhookSettings['avatar'], embeds = {embedMessage}}), { ['Content-Type'] = 'application/json' })
-        return
+    if messagesToSend['crafting'][id] == nil then
+        messagesToSend['crafting'][id] = buildPlaceHolderEmbed(type, messageData)
     end
 
-    if not messagesToSend[type][id] then
-        embedMessage = buildPlaceHolderEmbed(type, messageData)
-        messagesToSend[type][id] = embedMessage
-    end
+    -- Check if message description is too long
+
     local time = os.time()
 
-    if type == 'plant' then
-        if action == 'plant' then
-            messagesToSend['plant'][id]["description"] = messagesToSend['plant'][id]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Planted Plant\n"
-        elseif action == 'fertilize' then
-            messagesToSend['plant'][id]["description"] = messagesToSend['plant'][id]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Fertilized Plant\n"
-        elseif action == 'water' then
-            messagesToSend['plant'][id]["description"] = messagesToSend['plant'][id]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Watered Plant\n"
-        elseif action == 'harvest' then
-            messagesToSend['plant'][id]["description"] = messagesToSend['plant'][id]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Harvested Plant\n"
-        elseif action == 'destroy' then
-            messagesToSend['plant'][id]["description"] = messagesToSend['plant'][id]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Destroyed Plant\n"
+    local discordID = getPlayerDiscordId(source)
+    local newMessageLine = nil
+    if action == 'place' then
+        newMessageLine = messagesToSend['crafting'][id]["description"].."> [<t:"..time..":d><t:"..time..":T>]: <@"..discordID..">: Placed Table\n"
+    elseif action == 'remove' then
+        newMessageLine = messagesToSend['crafting'][id]["description"].."> [<t:"..time..":d><t:"..time..":T>]: <@"..discordID..">: Removed Table\n"
+    elseif action == 'craft' then
+        local itemString = ''
+        for name, amount in pairs(messageData.recipe.outputs) do
+            itemString = itemString.."`"..name.." x"..amount.."` \n"	
         end
-    elseif type == 'table' then
-        if action == 'place' then
-            messagesToSend['table'][id]["description"] = messagesToSend['table'][id]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Placed Table\n"
-        elseif action == 'remove' then
-            messagesToSend['table'][id]["description"] = messagesToSend['table'][id]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Removed Table\n"
-        elseif action == 'process' then 
-            messagesToSend['table'][id]["description"] = messagesToSend['table'][id]["description"].."> [<t:"..time..":d><t:"..time..":t>]: <@"..discordID..">: Processed Item\n"
+        newMessageLine = messagesToSend['crafting'][id]["description"].."> [<t:"..time..":d><t:"..time..":T>]: <@"..discordID..">: Craft "..itemString.."\n"
+    end
+
+    if newMessageLine then
+        if string.len(newMessageLine) > 2048 then
+            -- Send the message and reset the description
+            sendWehookDiscord(id)
+            if action == 'place' then
+                messagesToSend['crafting'][id]["description"] = "> [<t:"..time..":d><t:"..time..":T>]: <@"..discordID..">: Placed Table\n"
+            elseif action == 'remove' then
+                messagesToSend['crafting'][id]["description"] = "> [<t:"..time..":d><t:"..time..":T>]: <@"..discordID..">: Removed Table\n"
+            elseif action == 'craft' then
+                local itemString = ''
+                for name, amount in pairs(messageData.recipe.outputs) do
+                    itemString = itemString.."`"..name.." x"..amount.."` \n"
+                end
+                messagesToSend['crafting'][id]["description"] = "> [<t:"..time..":d><t:"..time..":T>]: <@"..discordID..">: Craft "..itemString.."\n"
+            end
+        else
+            messagesToSend['crafting'][id]["description"] = newMessageLine
         end
     end
 end
-
 
 CreateThread(function()
     if not webhookSettings['active'] then return end
     while true do
         Wait(1000 * 60) -- Wait 1 minute
-        if messagesToSend == nil then return end
-        for webhookType, messageList in pairs(messagesToSend) do
-            for messageId, messages in pairs(messageList) do
-                local webhookUrl = webhookSettings['urls'][webhookType]
-
-                if webhookUrl then
-                    PerformHttpRequest(webhookUrl, function(err, text, headers)
-                        if err == 200 or err == 204 then
-                            messagesToSend[webhookType][messageId] = nil
-                        else
-                            lib.print.info('[WEBHOOK ERROR] ' .. errors[err] .. ' (' .. err .. ')')
-                            webhookSettings['urls'][webhookType] = nil
-                        end
-                    end, 'POST', json.encode({username = webhookSettings['name'], avatar_url = webhookSettings['avatar'], embeds = {messages}}), { ['Content-Type'] = 'application/json' })
-                end
-            end
-        end
+        sendWehookDiscord()
     end
 end)

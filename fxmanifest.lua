@@ -45,7 +45,8 @@ server_scripts {
     'server/sv_crafting.lua',
     'server/sv_usableitems.lua',
     'server/sv_webhooks.lua',
-    'server/sv_admin.lua'
+    'server/sv_admin.lua',
+    'server/sv_versioncheck.lua',
 }
 
 dependencies {

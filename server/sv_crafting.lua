@@ -193,13 +193,13 @@ local setupTables = function()
         local v = result[i]
 
         if not Config.CraftingTables[v.type] then
-            MySQL.query('DELETE FROM drug_processing WHERE id = :id', {
+            MySQL.query('DELETE FROM it_crafting_tables WHERE id = :id', {
                 ['id'] = v.id
             }, function()
                 lib.print.info('[setupTables] - Table with ID:', v.id, 'has a invalid type, deleting it from the database') 
             end)
         elseif not v.owner then
-            MySQL.query('DELETE FROM drug_processing WHERE id = :id', {
+            MySQL.query('DELETE FROM it_crafting_tables WHERE id = :id', {
                 ['id'] = v.id
             }, function()
                 lib.print.info('[setupTables] - Table with ID:', v.id, 'has no owner, deleting it from the database')
@@ -360,7 +360,9 @@ RegisterNetEvent('it-crafting:server:craftItem', function(type, data)
     if failChance <= recipe.failChance then
         ShowNotification(source, _U('NOTIFICATION__CRAFT__FAIL'), 'error')
         for k,v in pairs(recipe.ingrediants) do
-            it.removeItem(source, k, v.amount)
+            if v.remove then
+                it.removeItem(source, k, v.amount)
+            end
         end
         return
     end
@@ -380,7 +382,7 @@ RegisterNetEvent('it-crafting:server:craftItem', function(type, data)
             end
         end
     end
-    SendToWebhook(source, 'table', 'process', craftingAction:getData())
+    SendToWebhook(source, type, 'craft', craftingAction:getData())
     
     for k, v in pairs(recipe.outputs) do
         it.giveItem(source, k, v)

@@ -279,11 +279,21 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
     TriggerEvent('it-crafting:client:syncRestLoop', true)
     local amount = tonumber(input[1])
     for item, itemData in pairs(recipe.ingrediants) do
-        if not it.hasItem(item, itemData.amount * amount) then
-            ShowNotification(nil, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
-            crafting = false
-            TriggerEvent('it-crafting:client:syncRestLoop', false)
-            return
+
+        if itemData.remove then
+            if not it.removeItems(item, itemData.amount * amount) then
+                ShowNotification(nil, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
+                crafting = false
+                TriggerEvent('it-crafting:client:syncRestLoop', false)
+                return
+            end
+        else
+            if not it.removeItems(item, itemData.amount) then
+                ShowNotification(nil, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
+                crafting = false
+                TriggerEvent('it-crafting:client:syncRestLoop', false)
+                return
+            end
         end
     end
 

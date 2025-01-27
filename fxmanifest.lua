@@ -3,7 +3,7 @@ game 'gta5'
 
 author '@allroundjonu'
 description 'Simple Crafting System for FiveM'
-version 'v1.0.0'
+version 'v1.0.1'
 
 identifier 'it-crafting'
 

@@ -55,7 +55,7 @@ local function createPointBoxTarget(targetType, targetData)
         if targetType == 'table' then
             options = {
                 {
-                    label = _U('TARGET__TABLE__LABEL'),
+                    label = _U('TARGET__TABLE__LABEL'):format(targetData.label),
                     name = 'it-crafting-use-table',
                     icon = 'fas fa-eye',
                     onSelect = function(data)
@@ -102,7 +102,7 @@ local function createPointBoxTarget(targetType, targetData)
         elseif targetType == 'point' then
             options = {
                 {
-                    label = _U('TARGET__TABLE__LABEL'),
+                    label = _U('TARGET__TABLE__LABEL'):format(targetData.label),
                     name = 'it-crafting-use-point',
                     icon = 'fas fa-eye',
                     onSelect = function(data)
@@ -211,7 +211,7 @@ local function createCraftingPointZones()
     for pointId, pointData in pairs(Config.CraftingPoints) do
 
         local boxZoneData = {}
-        if pointData.nodel then
+        if pointData.model then
             RequestModel(pointData.model)
             while not HasModelLoaded(pointData.model) do
                 Wait(100)
@@ -223,6 +223,7 @@ local function createCraftingPointZones()
 
 
             boxZoneData = {
+                label = pointData.label,
                 id = pointId,
                 coords = vector3(pointData.coords.x, pointData.coords.y, pointData.coords.z),
                 rotation = pointData.coords.w,
@@ -233,6 +234,7 @@ local function createCraftingPointZones()
             }
         else
             boxZoneData = {
+                label = pointData.label,
                 id = pointId,
                 coords = vector3(pointData.coords.x, pointData.coords.y, pointData.coords.z),
                 rotation = pointData.coords.w,
@@ -266,6 +268,7 @@ RegisterNetEvent('it-crafting:client:addTableZone', function(tableType, tableId)
         local size = vector3(max.x - min.x, max.y - min.y, max.z - min.z)
 
         local pointData = {
+            label = extendedTableData.label,
             id =  tableData.id,
             coords = tableData.coords,
             rotation = tableData.rotation,
@@ -323,6 +326,7 @@ CreateThread(function()
             local size = vector3(max.x - min.x, max.y - min.y, max.z - min.z)
 
             local pointData = {
+                label = extendedTableData.label,
                 id =  tableData.id,
                 coords = tableData.coords,
                 rotation = tableData.rotation,

@@ -28,7 +28,7 @@ cache = {
     supportedTargetSystems = {
         'qb-target',
         'ox_target',
-        nil
+        nil, false
     }
 }
 

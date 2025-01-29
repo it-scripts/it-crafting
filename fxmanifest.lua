@@ -37,7 +37,6 @@ server_scripts {
     '@oxmysql/lib/MySQL.lua',
 
     'bridge/**/server.lua',
-    'bridge/**/server/*.lua',
     
     'server/classes/*.lua',
 

@@ -91,8 +91,8 @@ local function createPointBoxTarget(targetType, targetData)
                                         ShowNotification(nil, _U('NOTIFICATION__NOT__ALLOWED'), 'error')
                                         return
                                     end
-                                    TriggerEvent('it-crafting:client:removeTable', {tableId = targetData.id})
                                 end
+                                TriggerEvent('it-crafting:client:removeTable', {tableId = targetData.id})
                             end
                         end, 'table', targetData.id)
                     end,

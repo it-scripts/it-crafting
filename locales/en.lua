@@ -86,7 +86,7 @@ Locales['en'] = {
 
     -- Target
     -- cl_target.lua
-    ['TARGET__TABLE__LABEL'] = 'Start crafting',
+    ['TARGET__TABLE__LABEL'] = 'View %s',
     ['TARGET__TABLE__REMOVE'] = 'Remove Crafting Station',
 
     -- Progressbar

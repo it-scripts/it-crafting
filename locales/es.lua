@@ -86,7 +86,7 @@ Locales['es'] = {
 
     -- Target
     -- cl_target.lua
-    ['TARGET__TABLE__LABEL'] = 'Comenzar a fabricar',
+    ['TARGET__TABLE__LABEL'] = 'Ver %s',
     ['TARGET__TABLE__REMOVE'] = 'Quitar estación de fabricación',
 
     -- Progressbar

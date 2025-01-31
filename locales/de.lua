@@ -86,7 +86,7 @@ Locales['de'] = {
 
     -- Target
     -- cl_target.lua
-    ['TARGET__TABLE__LABEL'] = 'Herstellung starten',
+    ['TARGET__TABLE__LABEL'] = '%s öffnen',
     ['TARGET__TABLE__REMOVE'] = 'Werkbank entfernen',
 
     -- Progressbar

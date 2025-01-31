@@ -18,7 +18,7 @@ function it.hasItem(source, item, amount, metadata)
     end
 
     if it.inventory == 'origen' then
-        local itemCount = origen_inventory:GetItemCount(source, item, metadata or nil, true)
+        local itemCount = origen_inventory:getItemCount(source, item, metadata or nil, true)
         if itemCount then
             if itemCount >= amount then return true else return false end
         end
@@ -74,7 +74,7 @@ function it.giveItem(source, item, amount, metadata)
 
     -- TODO: Check if there is a feedback
     if it.inventory == 'origen' then
-        local added, _ = origen_inventory:AddItem(source, item, amount, nil, nil, metadata or nil)
+        local added, _ = origen_inventory:add(source, item, amount, nil, nil, metadata or nil)
         return added
     end
 
@@ -138,9 +138,9 @@ function it.removeItem(source, item, amount, metadata)
     end
 
     if it.inventory == 'origen' then
-        local removedItem = origen_inventory:GetItemCount(source, item, metadata or nil, true)
+        local removedItem = origen_inventory:getItemCount(source, item, metadata or nil, true)
         if removedItem >= amount then
-            origen_inventory:RemoveItem(source, item, amount, nil, metadata or nil)
+            origen_inventory:removeItem(source, item, amount, nil, metadata or nil)
             return true
         end
     end
@@ -209,14 +209,6 @@ function it.createUsableItem(item, cb)
     end
 end
 
-function it.toggleItem(source, toggle, name, amount, metadata)
-    if toggle == 1 or toggle == true then
-        it.giveItem(source, name, amount, metadata or nil)
-    elseif toggle == 0 or toggle == false then
-        it.removeItem(source, name, amount, metadata or nil)
-    end
-end
-
 --- Get the item count of a specific item in the player's inventory.
 ---@param source number: The player's server ID.
 ---@param item string: The item name.
@@ -232,7 +224,7 @@ function it.getItemCount(source, item, metadata)
     end
 
     if it.inventory == 'origen' then
-        local itemCount = origen_inventory:GetItemCount(source, item, metadata or nil, true)
+        local itemCount = origen_inventory:getItemCount(source, item, metadata or nil, true)
         if itemCount then return itemCount else
             lib.print.error('[bridge | getItemCount] There was an error while getting the item count of ' .. item .. ' in the inventory. [ERR-INV-05]')
             return 0
@@ -301,115 +293,87 @@ function it.getItemLabel(source, itemName)
     return itemLabel or itemName
 end
 
-function it.getItemWeight(item)
-    local itemWeight
-    if it.inventory == 'ox' then
-        itemWeight = ox_inventory.GetItemWeight(item)
-    end
-
-    if it.inventory == 'origen' then
-        itemWeight = origen_inventory.GetItemWeight(item)
-    end
-
-    if it.inventory == 'codem' then
-        itemWeight = exports['codem-inventory']:GetItemWeight(item)
-    end
-
-    if it.core == 'qb-core' then
-        if CoreObject.Shared.Items[item] then
-            itemWeight = CoreObject.Shared.Items[item].weight
-        end
-    end
-    if it.core == 'esx' then
-        if CoreObject.GetItemWeight then
-            itemWeight = CoreObject.GetItemWeight(item)
-        end
-    end
-    return itemWeight or 0
-end
-
-function it.getCurrentWeight(src)
-    local currentWeight
-    if it.inventory == 'ox' then
-        currentWeight = ox_inventory.GetWeight(src)
-    end
-
-    if it.inventory == 'origen' then
-        currentWeight = origen_inventory.GetWeight(src)
-    end
-
-    if it.inventory == 'codem' then
-        currentWeight = exports['codem-inventory']:GetCurrentWeight(src)
-    end
-
-    if it.core == 'qb-core' then
-        local Player = CoreObject.Functions.GetPlayer(src)
-        if Player then
-            currentWeight = Player.Functions.GetWeight()
-        end
-    end
-    if it.core == 'esx' then
-        local Player = CoreObject.GetPlayerFromId(src)
-        if Player then
-            currentWeight = Player.getWeight()
-        end
-    end
-    return currentWeight or 0
-end
-
-function it.getMaxWeight(src)
-    local maxWeight
-    if it.inventory == 'ox' then
-        maxWeight = ox_inventory.GetMaxWeight(src)
-    end
-
-    if it.inventory == 'origen' then
-        maxWeight = origen_inventory.GetMaxWeight(src)
-    end
-
-    if it.inventory == 'codem' then
-        maxWeight = exports['codem-inventory']:GetMaxWeight(src)
-    end
-
-    if it.core == 'qb-core' then
-        local Player = CoreObject.Functions.GetPlayer(src)
-        if Player then
-            maxWeight = Player.Functions.GetMaxWeight()
-        end
-    end
-    if it.core == 'esx' then
-        local Player = CoreObject.GetPlayerFromId(src)
-        if Player then
-            maxWeight = Player.getMaxWeight()
-        end
-    end
-    return maxWeight or 0
-end
-
 function it.canCarryItem(src, item, amount)
-    local itemWeight = it.getItemWeight(item)
-    local currentWeight = it.getCurrentWeight(src)
-    local maxWeight = it.getMaxWeight(src)
-    local totalWeight = itemWeight * amount
-    if currentWeight + totalWeight <= maxWeight then
+    if it.inventory == 'ox' then
+        return ox_inventory:CanCarryItem(src, item, amount)
+    end
+
+    if it.inventory == 'origen' then
+        -- TODO: Check if the player can carry the item
         return true
-    else
-        return false
+    end
+
+    if it.inventory == 'codem' then
+        -- TODO: Check if the play can carry the item
+        return true
+    end
+   
+    if it.core == 'qb-core' then
+        if GetResourceState('qb-inventory') == 'started' then
+            local canAdd, reason = exports['qb-inventory']:CanAddItem(src, item, amount)
+            return canAdd
+        else
+            return true
+        end
+    end
+    
+    if it.core == 'esx' then
+        local xPlayer = it.getPlayer(src)
+        return xPlayer.canCarryItem(item, amount)
     end
 end
 -- itemList = {[item] = amount, [item] = amount}
 function it.canCarryItems(src, itemList)
-    local totalWeight = 0
-    for item, amount in pairs(itemList) do
-        local itemWeight = it.getItemWeight(item)
-        totalWeight = totalWeight + (itemWeight * amount)
+
+    if it.inventory == 'ox' then
+        local totalWeight = 0
+        for item, amount in pairs(itemList) do
+            local itemData = ox_inventory:Items(item)
+            if itemData then
+                totalWeight = totalWeight + (itemData.weight * amount)
+                if Config.Debug then
+                    lib.print.info('Item: ' .. item .. ' Weight: ' .. itemData.weight .. ' Amount: ' .. amount)
+                    lib.print.info('Total Weight: ' .. totalWeight)
+                end
+            end
+        end
+        local canCarry, _ = ox_inventory:CanCarryWeight(src, totalWeight)
+        return canCarry
     end
-    local currentWeight = it.getCurrentWeight(src)
-    local maxWeight = it.getMaxWeight(src)
-    if currentWeight + totalWeight <= maxWeight then
+
+    if it.inventory == 'origen' then
+        -- TODO: Check if the player can carry the item
         return true
-    else
-        return false
+    end
+
+    if it.inventory == 'codem' then
+        -- TODO: Check if the play can carry the item
+        return true
+    end
+
+    if it.core == 'qb-core' then
+       return true
+    end
+
+    if it.core == 'esx' then
+        local xPlayer = it.getPlayer(src)
+        local currentWeight = xPlayer.getWeight()
+        local totalWeight = 0
+        for item, amount in pairs(itemList) do
+            -- Get item from the database
+            MySQL.Async.fetchAll('SELECT * FROM items WHERE name = @name', {
+                ['@name'] = item
+            }, function(itemData)
+                if itemData[1] then
+                    totalWeight = totalWeight + (itemData[1].weight * amount)
+                end
+            end)
+        end
+        if currentWeight + totalWeight <= CoreObject.GetConfig().MaxWeight then
+            return true
+        else
+            return false
+        end
     end
 end
 

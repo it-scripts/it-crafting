@@ -86,7 +86,7 @@ Locales['it'] = {
 
     -- Target
     -- cl_target.lua
-    ['TARGET__TABLE__LABEL'] = 'Inizia a creare',
+    ['TARGET__TABLE__LABEL'] = 'Vedi %s',
     ['TARGET__TABLE__REMOVE'] = 'Rimuovi postazione di creazione',
 
     -- Progressbar

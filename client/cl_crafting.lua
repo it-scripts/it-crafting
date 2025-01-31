@@ -279,7 +279,6 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
     TriggerEvent('it-crafting:client:syncRestLoop', true)
     local amount = tonumber(input[1])
     for item, itemData in pairs(recipe.ingrediants) do
-
         if itemData.remove then
             if not it.hasItem(item, itemData.amount * amount) then
                 ShowNotification(nil, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
@@ -297,7 +296,7 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
         end
     end
 
-    if extendedCraftingData.restricCrafting.onlyOnePlayer then
+    if extendedCraftingData.restricCrafting['onlyOnePlayer'] then
         local inUse = lib.callback.await('it-crafting:server:inUse', false, craftingType,  args.craftId)
         
         if inUse then

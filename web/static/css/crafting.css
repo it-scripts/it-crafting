@@ -1,0 +1,571 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Rajdhani', sans-serif;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-size: cover;
+    background-position: center;
+    font-family: 'Rajdhani', sans-serif;
+    color: white;
+}
+
+.loading-spinner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    width: 100%;
+    color: white;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #8bc34a;
+    animation: spin 1s ease-in-out infinite;
+    margin-bottom: 20px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.crafting-menu {
+    position: relative; /* Ermöglicht absolute Positionierung von Kindelementen */
+    width: 90%;
+    max-width: 800px;
+    border-radius: 8px;
+    padding: 20px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border: none;
+    right: -25%;
+    background-color: rgba(26, 26, 26, 0.7);
+}
+
+/* Add custom scrollbar to enhance the glass effect */
+ .crafting-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.crafting-menu::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.crafting-menu::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.crafting-menu::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.recipe {
+    margin-bottom: 30px;
+    border-radius: 5px;
+    overflow: hidden;
+    background-color: rgba(26, 26, 26, 1.0) !important;
+    /* backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px); */
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+.recipe:hover {
+    transform: translateY(-2px);
+}
+
+.recipe-header {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    background-color: rgba(38, 38, 38, 0.8);
+    border-bottom: 1px solid rgba(51, 51, 51, 0.5);
+    cursor: pointer;
+}
+
+.recipe-icon {
+    width: 60px;
+    height: 60px;
+    background-color: #333;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-right: 15px;
+    position: relative;
+}
+
+.recipe-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+    pointer-events: none;
+}
+
+.recipe-name {
+    font-size: 24px;
+    font-weight: bold;
+    flex-grow: 1;
+}
+
+.recipe-content {
+    padding: 20px;
+    cursor: default;
+}
+
+.ingredients {
+    display: grid;
+    grid-template-columns: repeat(7, 60px);
+    gap: 40px; /* Increased spacing between ingredients */
+    margin-bottom: 20px;
+    max-width: 450px; /* Adjusted width to account for larger gaps */
+}
+
+/* Add this new container for the button and timer */
+.craft-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.craft-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.quantity-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.quantity-label {
+    font-size: 12px;
+    color: #aaa;
+    margin-left: 2px;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    background-color: #333;
+    border-radius: 5px;
+    padding: 3px;
+    border: 1px solid #555;
+}
+
+.quantity-btn {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #444;
+    border: none;
+    color: #ccc;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.quantity-btn:hover {
+    background-color: #555;
+}
+
+.quantity-input {
+    width: 40px;
+    height: 24px;
+    background-color: #222;
+    border: none;
+    color: white;
+    text-align: center;
+    font-size: 14px;
+    margin: 0 5px;
+    border-radius: 3px;
+    /* Enhanced browser compatibility for removing spinner arrows */
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    appearance: textfield;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+    cursor: text;
+}
+
+/* Hide spinner for Webkit browsers (Chrome, Safari, newer versions of Opera) */
+.quantity-input::-webkit-inner-spin-button, 
+.quantity-input::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+/* Hide spinner for Firefox */
+.quantity-input {
+    -moz-appearance: textfield;
+}
+
+/* Hide spinner for Edge */
+.quantity-input::-ms-clear, 
+.quantity-input::-ms-reveal {
+    display: none;
+}
+
+.ingredient {
+    position: relative;    
+    border-radius: 5px;
+    overflow: visible; /* Changed from 'hidden' to allow count to overflow */
+    width: 60px; /* Fixed width */
+    height: 60px; /* Fixed height */
+    margin-bottom: 20px; /* Add space for the name below */
+    border: #555 2px solid; /* Added border for separation */
+    flex-shrink: 0; /* Prevent shrinking */
+    cursor: default;
+}
+
+.ingredient img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 5px;
+}
+
+.ingredient-name {
+    position: absolute;
+    bottom: -20px; /* Position below the image */
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 10px;
+    color: #999; /* Gray color */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 2px;
+    cursor: default;
+}
+
+.ingredient-count {
+    position: absolute;
+    top: -10px; /* Slightly adjusted for better positioning */
+    right: -20px; /* Slightly adjusted for better positioning */
+    background-color: rgba(0, 0, 0, 1);
+    padding: 3px 6px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: bold;
+    z-index: 2; /* Ensure it appears above the image */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3); /* Added shadow for depth */
+    min-width: 40px; /* Ensure minimum width */
+    text-align: center; /* Center text for consistent appearance */
+    cursor: default;
+}
+
+.ingredient-count.complete {
+    background-color: rgba(76, 175, 80, 1);
+}
+
+.ingredient-count.partial {
+    background-color: rgba(255, 152, 0, 1);
+}
+
+.ingredient-count.missing {
+    background-color: rgba(244, 67, 54, 1);
+}
+
+.craft-button {
+    padding: 12px 24px;
+    background-color: #8bc34a;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-width: 150px; /* Ensure minimum width */
+    width: 150px; /* Fixed width */
+    text-align: center; /* Center text */
+    white-space: nowrap; /* Prevent text wrapping */
+    overflow: hidden; /* Hide overflow text */
+    text-overflow: ellipsis; /* Show ellipsis for overflow */
+}
+
+.craft-button:hover {
+    background-color: #9ccc65;
+}
+
+.craft-button.disabled {
+    background-color: #555;
+    color: #888;
+    cursor: not-allowed;
+}
+
+.timer {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #ddd;
+    padding: 8px 12px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    cursor: default;
+}
+
+.timer i {
+    margin-right: 5px;
+}
+
+@media (max-width: 768px) {
+    .ingredients {
+        grid-template-columns: repeat(4, 60px);
+        gap: 20px; /* Adjusted for medium screens but still larger */
+        max-width: 380px; /* Adjusted width to account for larger gaps */
+    }
+    
+    .ingredient-name {
+        font-size: 9px;
+    }
+    
+    /* Keep ingredient size consistent */
+    .ingredient {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .craft-controls {
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ingredients {
+        grid-template-columns: repeat(3, 60px);
+        gap: 15px; /* Adjusted for small screens but still larger */
+        max-width: 240px; /* Adjusted width to account for larger gaps */
+    }
+    
+    /* Keep ingredient size consistent even on mobile */
+    .ingredient {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 20px; /* Maintain consistent spacing */
+    }
+    
+    .ingredient-name {
+        font-size: 8px;
+        bottom: -18px; /* Adjusted to maintain consistent position */
+    }
+    
+    .recipe-name {
+        font-size: 18px;
+    }
+    
+    .recipe-icon {
+        width: 60px; /* Keep consistent with ingredients */
+        height: 60px; /* Keep consistent with ingredients */
+    }
+    
+    .craft-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .quantity-wrapper {
+        width: 100%;
+    }
+    
+    .quantity-control {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .craft-button {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+/* Update the CSS with a rule for hidden ingredients */
+.ingredient.hidden-item {
+    opacity: 0.8;
+    background-color: #222; /* Darker background for hidden items */
+}
+
+.ingredient.hidden-item img {
+    opacity: 0; /* Hide the original image completely */
+}
+
+.ingredient.hidden-item .ingredient-name {
+    font-size: 8px;
+    color: #777; /* Lighter gray color */
+}
+
+.ingredient.hidden-item .ingredient-count {
+    background-color: rgba(85, 85, 85, 0.9); /* Gray for unknown status */
+}
+
+/* Hidden item question mark overlay */
+.hidden-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    color: #999;
+    z-index: 1;
+}
+
+/* Add these new styles for recipe outputs */
+.recipe-io-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.section-label {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.outputs {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.outputs.multiple {
+    position: relative;
+}
+
+.outputs.multiple::before {
+    content: "+";
+    position: absolute;
+    top: 50%;
+    left: 90px; /* Position between first and second output */
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #aaa;
+}
+
+.output-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.output-icon {
+    width: 70px;
+    height: 70px;
+    background-color: #333;
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid #8bc34a;
+}
+
+.output-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 5px;
+}
+
+.output-quantity {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #8bc34a;
+    color: black;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.output-name {
+    font-size: 12px;
+    color: #fff;
+    text-align: center;
+    max-width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Media queries updates */
+@media (max-width: 768px) {
+    .outputs.multiple::before {
+        left: 80px;
+    }
+    
+    .output-icon {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .recipe-io-container {
+        gap: 15px;
+    }
+    
+    .outputs.multiple::before {
+        left: 70px;
+    }
+    
+    .output-icon {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .output-quantity {
+        font-size: 10px;
+        padding: 1px 4px;
+    }
+    
+    .output-name {
+        font-size: 10px;
+        max-width: 60px;
+    }
+}

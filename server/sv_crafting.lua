@@ -1,187 +1,5 @@
-lib.callback.register('it-crafting:server:getRecipes', function(source, type, id)
-    if Config.Debug then lib.print.info('[getRecipes] - Try to get Recipes from Table with ID:', id) end
-    if type == 'table' then
-        if not CraftingTables[id] then
-            if Config.Debug then lib.print.error('[getRecipes | Debug] - Table with ID:', id, 'not found') end
-            return nil
-        end
-        if Config.Debug then lib.print.info('[getRecipes | Debug] - Recipes from Table with ID:', id, 'found') end
-        return CraftingTables[id]:getRecipes()
-    elseif type == 'point' then
-        if not CraftingPoints[id] then
-            if Config.Debug then lib.print.error('[getRecipes | Debug] - Point with ID:', id, 'not found') end
-            return nil
-        end
-        if Config.Debug then lib.print.info('[getRecipes | Debug] - Point from Table with ID:', id, 'found') end
-        return CraftingPoints[id]:getRecipes()
-    end
-    if Config.Debug then lib.print.error('[getRecipes | Debug] - type', type, 'is invalid!') end
-    return nil
-end)
-
-lib.callback.register('it-crafting:server:getRecipeById', function(source, type, craftId, recipeId)
-
-    if Config.Debug then lib.print.info('[getRecipeById] - Try to get Recipe with ID:', recipeId, 'from Table with ID:', tableId) end
-    local currentTable = nil
-    if type == 'table' then
-        currentTable = CraftingTables
-    elseif type == 'point' then
-        currentTable = CraftingPoints
-    else
-        if Config.Debug then lib.print.error('[getRecipeById] - type', type, 'is invalid!') end
-        return nil
-    end
-
-    if not currentTable[craftId] then
-        if Config.Debug then lib.print.error('[getRecipeById] - Table with ID:', craftId, 'not found') end
-        return nil
-    end
-
-    local currentPoint = currentTable[craftId]
-
-    local recipe = currentPoint:getRecipeData(recipeId)
-
-    if not recipe then
-        if Config.Debug then lib.print.error('[getRecipeById] - Recipe with ID:', recipeId, 'not found') end
-        return nil
-    end
-
-    if Config.Debug then lib.print.info('[getRecipeById] - Recipe with ID:', recipeId, 'from CraftID:', craftId, 'found') end
-    return recipe
-end)
-
-lib.callback.register('it-crafting:server:getDataById', function(source, type, id)
-    
-    if Config.Debug then lib.print.info('[getDataById | Debug] - Try to get Table with ID:', id) end
-
-    if type == 'table' then
-        if not CraftingTables[id] then
-            if Config.Debug then lib.print.error('[getDataById | Debug] - Table with ID:', id, 'not found') end
-            return nil
-        end
-        if Config.Debug then lib.print.info('[getDataById | Debug] - Table with ID:', id, 'found') end
-        return CraftingTables[id]:getData()
-    elseif type == 'point' then
-        if not CraftingPoints[id] then
-            if Config.Debug then lib.print.error('[getDataById | Debug] - Point with ID:', id, 'not found') end
-            return nil
-        end
-        if Config.Debug then lib.print.info('[getDataById | Debug] - Point with ID:', id, 'found') end
-        return CraftingPoints[id]:getData()
-    end
-
-    if Config.Debug then lib.print.error('[getDataById | Debug] - type', type, 'is invalid!') end
-    return nil
-end)
-
-lib.callback.register('it-crafting:server:getTableByNetId', function(source, netId)
-        
-    if Config.Debug then lib.print.info('[getTableByNetId] - Try to get Table with NetID:', netId) end
-
-    for _, processingTable in pairs(CraftingTables) do
-        if processingTable.netId == netId then
-            if Config.Debug then lib.print.info('[getTableByNetId] - Table with NetID:', netId, 'found') end
-            return processingTable:getData()
-        end
-    end
-
-    if Config.Debug then lib.print.error('[getTableByNetId] - Table with NetID:', netId, 'not found') end
-    return nil
-end)
-
-lib.callback.register('it-crafting:server:getTableByOwner', function(source)
-
-    local src = source
-    local citId = it.getCitizenId(src)
-    if Config.Debug then lib.print.info('[getTableByOwner] - Try to get Table with Owner:', citId) end
-
-    local temp = {}
-
-    for k, v in pairs(CraftingTables) do
-        if v.owner == citId then
-            temp[k] = v:getData()
-        end
-    end
-
-    if not next(temp) then
-        if Config.Debug then lib.print.error('[getTableByOwner] - Table with Owner:', source, 'not found') end
-        return nil
-    end
-
-    if Config.Debug then lib.print.info('[getTableByOwner] - Table with Owner:', source, 'found') end
-    return temp
-end)
-
-lib.callback.register('it-crafting:server:inUse', function(source, type, id)
-    if Config.Debug then lib.print.info('[inUse] - Try to get Table with ID:', id) end
-
-    if type == 'table' then
-        if not CraftingTables[id] then
-            if Config.Debug then lib.print.error('[inUse | Debug] - Table with ID:', id, 'not found') end
-            return nil
-        end
-        if Config.Debug then lib.print.info('[inUse | Debug] - Table with ID:', id, 'found') end
-        return CraftingTables[id].inUse
-    elseif type == 'point' then
-        if not CraftingPoints[id] then
-            if Config.Debug then lib.print.error('[inUse | Debug] - Point with ID:', id, 'not found') end
-            return nil
-        end
-        if Config.Debug then lib.print.info('[inUse | Debug] - Point with ID:', id, 'found') end
-        return CraftingPoints[id].inUse
-    end
-
-    if Config.Debug then lib.print.error('[inUse | Debug] - type', type, 'is invalid!') end
-    return nil
-end)
-
-lib.callback.register('it-crafting:server:updateUse', function(source, type, id, inUse)
-    if Config.Debug then lib.print.info('[updateUse] - Try to get Table with ID:', id) end
-
-    if type == 'table' then
-        if not CraftingTables[id] then
-            if Config.Debug then lib.print.error('[updateUse | Debug] - Table with ID:', id, 'not found') end
-            return nil
-        end
-        if Config.Debug then lib.print.info('[updateUse | Debug] - Table with ID:', id, 'found') end
-        CraftingTables[id]:useTable(inUse)
-        return true
-    elseif type == 'point' then
-        if not CraftingPoints[id] then
-            if Config.Debug then lib.print.error('[updateUse | Debug] - Point with ID:', id, 'not found') end
-            return nil
-        end
-        if Config.Debug then lib.print.info('[updateUse | Debug] - Point with ID:', id, 'found') end
-        CraftingPoints[id]:useTable(inUse)
-        return true
-    end
-
-    if Config.Debug then lib.print.error('[updateUse | Debug] - type', type, 'is invalid!') end
-    return false
-end)
-
-lib.callback.register('it-crafting:server:getTables', function(source)
-    local temp = {}
-
-    for k, v in pairs(CraftingTables) do
-        temp[k] = v:getData()
-    end
-
-    return temp
-end)
-
-lib.callback.register('it-crafting:server:getPoints', function(source)
-    local temp = {}
-
-    for k, v in pairs(CraftingPoints) do
-        temp[k] = v:getData()
-    end
-
-    return temp
-end)
-
 --- Method to setup all the weedplants, fetched from the database
---- @return nil
+--- @return boolean: true if setup was successful, false if not
 local setupTables = function()
     local result = MySQL.query.await('SELECT * FROM it_crafting_tables')
 
@@ -273,29 +91,8 @@ local setupPoints = function()
     return true
 end
 
-AddEventHandler('onResourceStart', function(resource)
-    if resource ~= GetCurrentResourceName() then return end
-
-    while not DatabaseSetuped do
-        Wait(100)
-    end
-    if Config.Debug then lib.print.info('Setting up Processing Tables') end
-    while not setupTables() do
-        Wait(100)
-    end
-
-    local setupPoints = setupPoints()
-    if setupPoints == nil then
-        if Config.Debug then lib.print.warn('No Crafting Points found in the config') end
-    elseif not setupPoints then
-        if Config.Debug then lib.print.error('Error while setting up Crafting Points') end
-    end
-
-    updateThread()
-end)
-
 --- Thread to check if the entities are still valid
-function updateThread()
+local function updateThread()
     for _, craftingTable in pairs(CraftingTables) do
         if craftingTable.entity then
             -- Check if entity is still valid
@@ -321,6 +118,28 @@ function updateThread()
     SetTimeout(1000 * 60, updateThread)
 end
 
+AddEventHandler('onResourceStart', function(resource)
+    if resource ~= GetCurrentResourceName() then return end
+
+    while not DatabaseSetuped do
+        Wait(100)
+    end
+    if Config.Debug then lib.print.info('Setting up Processing Tables') end
+    while not setupTables() do
+        Wait(100)
+    end
+
+    local setupPoints = setupPoints()
+    if setupPoints == nil then
+        if Config.Debug then lib.print.warn('No Crafting Points found in the config') end
+    elseif not setupPoints then
+        if Config.Debug then lib.print.error('Error while setting up Crafting Points') end
+    end
+
+    updateThread()
+end)
+
+
 AddEventHandler('onResourceStop', function(resource)
     if resource ~= GetCurrentResourceName() then return end
     
@@ -333,120 +152,36 @@ AddEventHandler('onResourceStop', function(resource)
     end
 end)
 
-RegisterNetEvent('it-crafting:server:craftItem', function(type, data)
-
-    local currentTable = {}
-    if type == 'table' then
-        currentTable = CraftingTables
-    elseif type == 'point' then
-        currentTable = CraftingPoints
-    else
-        lib.print.error('[Crafting] - Invalid type:', type)
-        return
-    end
-
-    if not currentTable[data.tableId] then return end
-    local craftingAction = currentTable[data.tableId]
-    local recipe = craftingAction:getRecipeData(data.recipeId)
-    if #(GetEntityCoords(GetPlayerPed(source)) - craftingAction.coords) > 10 then return end
-
-    local player = it.getPlayer(source)
-    --local tableInfos = Config.ProcessingTables[processingTables[entity].type]
-
-    if not player then return end
-    local givenItems = {}
-
-    local failChance = math.random(1, 100)
-    if failChance <= recipe.failChance then
-        ShowNotification(source, _U('NOTIFICATION__CRAFT__FAIL'), 'error')
-        for k,v in pairs(recipe.ingrediants) do
-            if v.remove then
-                it.removeItem(source, k, v.amount)
-            end
-        end
-        return
-    end
-
-    for k, v in pairs(recipe.ingrediants) do
-        if v.remove then
-            if not it.removeItem(source, k, v.amount) then
-                ShowNotification(source, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
-                if #givenItems > 0 then
-                    for _, x in pairs(givenItems) do
-                        it.giveItem(source, x.name, x.amount)
-                    end
-                end
-                return
-            else
-                table.insert(givenItems, {name = k, amount = v.amount})
-            end
-        end
-    end
-
-    for k, v in pairs(recipe.outputs) do
-        it.giveItem(source, k, v)
-    end
-
-    local messageData = craftingAction:getData()
-    messageData.recipe = recipe
-
-    SendToWebhook(source, type, 'craft', messageData)
-end)
-
-
-RegisterNetEvent('it-crafting:server:removeTable', function(args)
-
-    if not CraftingTables[args.tableId] then return end
-
-    local craftingTable = CraftingTables[args.tableId]
-
-    if not args.extra then
-        if #(GetEntityCoords(GetPlayerPed(source)) - craftingTable.coords) > 10 then return end
-        it.giveItem(source, craftingTable.tableType, 1)
-    end
-
-    MySQL.query('DELETE from it_crafting_tables WHERE id = :id', {
-        ['id'] = args.tableId
-    })
-
-    local tableData = craftingTable:getData()
-    SendToWebhook(source, 'table', 'remove', tableData)
-
-    craftingTable:delete()
-    TriggerClientEvent('it-crafting:client:syncTables', -1, CraftingTables)
-end)
-
 RegisterNetEvent('it-crafting:server:createNewTable', function(coords, type, rotation, metadata)
     local src = source
-    local player = it.getPlayer(src)
+    local player = exports.it_bridge:GetPlayer(src)
 
     if not player then if Config.Debug then lib.print.error("No Player") end return end
     if #(GetEntityCoords(GetPlayerPed(src)) - coords) > Config.rayCastingDistance + 10 then return end
-    local itemRemoved = false
-    if it.inventory == 'ox' then
-        itemRemoved = true
-    else
-        itemRemoved = it.removeItem(src, type, 1, metadata)
-    end
-    if itemRemoved then
+    
+    if exports.it_bridge:RemoveItem(src, type, 1, metadata) then
 
-        local id = it.generateCustomID(8)
+        local id = exports.it_bridge:GenerateCustomID(8)
         while CraftingTables[id] do
-            id = it.generateCustomID(8)
+            id = exports.it_bridge:GenerateCustomID(8)
         end
+
+        local currentDimension = GetEntityRoutingBucket(GetPlayerPed(src))
         
-        MySQL.insert('INSERT INTO `it_crafting_tables` (id, coords, type, rotation, owner) VALUES (:id, :coords, :type, :rotation, :owner)', {
+        MySQL.insert('INSERT INTO `it_crafting_tables` (id, coords, type, rotation, dimension, owner) VALUES (:id, :coords, :type, :rotation, :dimension, :owner)', {
             ['id'] = id,
             ['coords'] = json.encode(coords),
             ['type'] = type,
             ['rotation'] = rotation,
-            ['owner'] = it.getCitizenId(src)
+            ['dimension'] = currentDimension,
+            ['owner'] = exports.it_bridge:GetCitizenId(src),
         }, function()
             local currentTable = CraftingTable:new(id, {
                 entity = nil,
                 coords = coords,
+                dimension = currentDimension,
                 rotation = rotation,
-                owner = it.getCitizenId(src),
+                owner = exports.it_bridge:GetCitizenId(src),
                 tableType = type
             })
 
@@ -474,7 +209,30 @@ RegisterNetEvent('it-crafting:server:createNewTable', function(coords, type, rot
     end
 end)
 
+RegisterNetEvent('it-crafting:server:removeTable', function(args)
 
+    if not CraftingTables[args.tableId] then return end
+
+    local craftingTable = CraftingTables[args.tableId]
+
+    if not args.extra then
+        if #(GetEntityCoords(GetPlayerPed(source)) - craftingTable.coords) > 10 then return end
+        exports.it_bridge:GiveItem(source, craftingTable.tableType, 1)
+    end
+
+    MySQL.query('DELETE from it_crafting_tables WHERE id = :id', {
+        ['id'] = args.tableId
+    })
+
+    local tableData = craftingTable:getData()
+    SendToWebhook(source, 'table', 'remove', tableData)
+
+    craftingTable:delete()
+    TriggerClientEvent('it-crafting:client:syncTables', -1, CraftingTables)
+end)
+
+
+-- This event is currently not used, but it is here for future use
 RegisterNetEvent('it-crafting:server:syncparticlefx', function(status, tableId, netId, particlefx)
     TriggerClientEvent('it-crafting:client:syncparticlefx',-1, status, tableId, netId, particlefx)
 end)

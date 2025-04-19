@@ -23,7 +23,7 @@ end)
 
 RegisterNetEvent('it-crafting:client:generateTableListMenu', function()
     local currentCoords = GetEntityCoords(PlayerPedId())
-    local allTables = lib.callback.await('it-crafting:server:getTables', false)
+    local allTables = lib.callback.await('it-crafting:callback:getTables', false)
 
     -- check if there are any tables
     if not allTables then return end

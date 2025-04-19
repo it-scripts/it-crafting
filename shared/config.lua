@@ -16,15 +16,11 @@ Locales = Locales or {}
 ]]
 
 --[[
-    The first thing to do is to set which framework, inventory and target system the server uses
-    The system will automatically detect the framework, inventory and target system if you set it to 'autodetect'
-    If you are using a custom framework, inventory or target system contact the developer or add support yourself by creating a pull request
-    If you need need more information about this configuration, you can read the documentation here: https://docs.it-scripts.com/scripts/it-crafting
+    If you set this to true you can use the new custom UI.
+    If you set this to false you will be still able to youse the ox_menu to craft.
+    Also if you set this to true you have to use the new custom skill game for crafting
 ]]
-
-Config.Framework = 'autodetect' -- Choose your framework ('qb-core', 'es_extended', 'ND_Core' 'autodetect')
-Config.Inventory = 'autodetect' -- Choose your inventory ('ox_inventory', 'qb-inventory', 'es_extended', 'origen_inventory', 'codem-inventory', 'autodetect')
-Config.Target = 'autodetect' -- false -- Target system ('ox_target' or false to disable)
+Config.UseNewUI = true
 
 --[[
     Here you can set the language for the script, you can choose between 'en', 'es', 'de'
@@ -80,8 +76,8 @@ Config.Recipes = {
     ['lockpick'] = {
         label = 'Lockpick',
         ingrediants = {
-            ['scrapmetal'] = {amount = 3, remove = true},
-            ['WEAPON_HAMMER'] = {amount = 1, remove = false}
+            ['scrapmetal'] = {amount = 3, remove = true, show = true},
+            ['WEAPON_HAMMER'] = {amount = 1, remove = false, show = false}
         },
         outputs = {
             ['lockpick'] = 2
@@ -116,7 +112,7 @@ Config.Recipes = {
             anim = 'idle_a',
         },
         skillCheck = {
-            enabled = false,
+            enabled = true,
             difficulty = {'easy', 'easy', 'medium', 'easy'},
             keys = {'w', 'a', 's', 'd'}
         }
@@ -200,6 +196,37 @@ Config.CraftingTables = { -- Create processing table
         },
         label = 'Crafting Table', -- Label for the table
         model = 'prop_tool_bench02_ld', -- Exanples: freeze_it-scripts_empty_table, freeze_it-scripts_weed_table, freeze_it-scripts_coke_table, freeze_it-scripts_meth_table
+        restricCrafting = {
+            ['onlyOnePlayer'] = true, -- Only one player can use the table at a time
+            ['onlyOwnerCraft'] = false, -- Only the owner of the table can use it
+            ['onlyOwnerRemove'] = true, -- Only the owner of the table can remove it
+            ['zones'] = {}, -- Zones where the table can be used
+            ['jobs'] = {}
+        },
+        blip = {
+            display = true, -- Display blip on map
+            sprite = 446, -- Select blip from (https://docs.fivem.net/docs/game-references/blips/)
+            displayColor = 2, -- Select blip color from (https://docs.fivem.net/docs/game-references/blips/)
+            scale = 0.8,
+            displayText = 'Crafting Table',
+        },
+        recipes = {'lockpick', 'bandage', 'joint', 'cocaine'}
+    }
+}
+
+
+-- ┌───────────────────────────────────────────────────────────────────┐
+-- │  ____            __ _   _               ____                      │
+-- │ / ___|_ __ __ _ / _| |_(_)_ __   __ _  |  _ \ _ __ ___  _ __  ___ │
+-- │| |   | '__/ _` | |_| __| | '_ \ / _` | | |_) | '__/ _ \| '_ \/ __|│
+-- │| |___| | | (_| |  _| |_| | | | | (_| | |  __/| | | (_) | |_) \__ \│
+-- │ \____|_|  \__,_|_|  \__|_|_| |_|\__, | |_|   |_|  \___/| .__/|___/│
+-- │                                 |___/                  |_|        │
+-- └───────────────────────────────────────────────────────────────────┘
+Config.CraftingProps = {
+    ['simple_crafting_table'] = {
+        label = 'Crafting Table', -- Label for the table
+        model = 'prop_tool_bench02_ld', -- Every model on the map with this name will be usable
         restricCrafting = {
             ['onlyOnePlayer'] = true, -- Only one player can use the table at a time
             ['onlyOwnerCraft'] = false, -- Only the owner of the table can use it

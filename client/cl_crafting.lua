@@ -48,7 +48,6 @@ local function checkforZones(coords, targetZones)
     return nil
 end
 
-
 local placeCraftingTable = function(ped, tableItem, coords, rotation, metadata)
 
     local extendedItemData = Config.CraftingTables[tableItem]
@@ -57,7 +56,7 @@ local placeCraftingTable = function(ped, tableItem, coords, rotation, metadata)
         return
     end
 
-    local tables = lib.callback.await('it-crafting:server:getTables', false)
+    local tables = lib.callback.await('it-crafting:callback:getTables', false)
 
     if tables then
         for _, table in pairs(tables) do
@@ -66,43 +65,26 @@ local placeCraftingTable = function(ped, tableItem, coords, rotation, metadata)
             if distance <= Config.MinDistanceToTable then
                 ShowNotification(nil, _U('NOTIFICATION__TO__CLOSE'), 'error')
                 TriggerEvent('it-crafting:client:syncRestLoop', false)
-                if it.inventory == 'ox' then
-                    it.giveItem(tableItem, 1, metadata)
-                end
                 return
             end
         end
     end
 
-    local playerTables = lib.callback.await('it-crafting:server:getTableByOwner', false)
+    local playerTables = lib.callback.await('it-crafting:callback:getTableByOwner', false)
     if Config.PlayerTableLimit ~= -1 and playerTables then
-
-        local playerTableCount = 0
-        for _, table in pairs(playerTables) do
-            if table.owner == it.getCitizenId() then
-                playerTableCount = playerTableCount + 1
-            end
-        end
-
-        if playerTableCount >= Config.PlayerTableLimit then
+        if #playerTables >= Config.PlayerTableLimit then
             ShowNotification(nil, _U('NOTIFICATION__MAX__TABLES'), 'error')
             TriggerEvent('it-crafting:client:syncRestLoop', false)
-            if it.inventory == 'ox' then
-                it.giveItem(tableItem, 1, metadata)
-            end
             return
         end
     end
-
 
     if extendedItemData.restricCrafting['zones'] and #extendedItemData.restricCrafting['zones'] > 0 then
         local targetZone = checkforZones(coords, extendedItemData.restricCrafting['zones'])
         if not targetZone then
             ShowNotification(nil, _U('NOTIFICATION__NOT__ALLOWED__ZONE'), 'error')
             TriggerEvent('it-crafting:client:syncRestLoop', false)
-            if it.inventory == 'ox' then
-                it.giveItem(tableItem, 1, metadata)
-            end
+
             return
         end
     end
@@ -112,7 +94,7 @@ local placeCraftingTable = function(ped, tableItem, coords, rotation, metadata)
     while 
         not HasAnimDictLoaded('amb@medic@standing@kneel@base') or
         not HasAnimDictLoaded('anim@gangops@facility@servers@bodysearch@')
-    do 
+    do
         Wait(0)
     end
 
@@ -132,19 +114,14 @@ local placeCraftingTable = function(ped, tableItem, coords, rotation, metadata)
         },
     }) then
         TriggerServerEvent('it-crafting:server:createNewTable', coords, tableItem, rotation, metadata)
-
-        ClearPedTasks(ped)
-        RemoveAnimDict('amb@medic@standing@kneel@base')
-        RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
     else
         ShowNotification(nil, _U('NOTIFICATION_CANCELED'), "error")
-        ClearPedTasks(ped)
-        RemoveAnimDict('amb@medic@standing@kneel@base')
-        RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
-        if it.inventory == 'ox' then
-            it.giveItem(tableItem, 1, metadata)
-        end
     end
+
+    ClearPedTasks(ped)
+    RemoveAnimDict('amb@medic@standing@kneel@base')
+    RemoveAnimDict('anim@gangops@facility@servers@bodysearch@')
+
     TriggerEvent('it-crafting:client:syncRestLoop', false)
 end
 
@@ -204,6 +181,7 @@ RegisterNetEvent('it-crafting:client:placeCraftingTable', function(tableItem, me
                 lib.hideTextUI()
 
                 DeleteObject(table)
+                SetModelAsNoLongerNeeded(hashModel)
                 placeCraftingTable(ped, tableItem, dest, rotation, metadata)
                 return
             end
@@ -212,10 +190,8 @@ RegisterNetEvent('it-crafting:client:placeCraftingTable', function(tableItem, me
                 placed = true
                 lib.hideTextUI()
                 DeleteObject(table)
+                SetModelAsNoLongerNeeded(hashModel)
                 TriggerEvent('it-crafting:client:syncRestLoop', false)
-                if it.inventory == 'ox' then
-                    it.giveItem(tableItem, 1, metadata)
-                end
                 return
             end
         else
@@ -232,6 +208,7 @@ RegisterNetEvent('it-crafting:client:placeCraftingTable', function(tableItem, me
                 local coords = GetEntityCoords(table)
                 lib.hideTextUI()
                 DeleteObject(table)
+                SetModelAsNoLongerNeeded(hashModel)
                 placeCraftingTable(ped, tableItem, coords, heading, metadata)
                 return
             end
@@ -240,10 +217,8 @@ RegisterNetEvent('it-crafting:client:placeCraftingTable', function(tableItem, me
                 placed = true
                 lib.hideTextUI()
                 DeleteObject(table)
+                SetModelAsNoLongerNeeded(hashModel)
                 TriggerEvent('it-crafting:client:syncRestLoop', false)
-                if it.inventory == 'ox' then
-                    it.giveItem(tableItem, 1, metadata)
-                end
                 return
             end
         end
@@ -252,18 +227,13 @@ end)
 
 RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
     if Config.Debug then lib.print.info('Crafting Item:', craftingType, args) end
-    
-    local craftingData = lib.callback.await('it-crafting:server:getDataById', false, craftingType, args.craftId)
-    local recipe = lib.callback.await('it-crafting:server:getRecipeById', false, craftingType, args.craftId, args.recipeId)
-    if crafting then return end
 
-    local extendedCraftingData = nil
-    if craftingType == 'table' then
-        extendedCraftingData = Config.CraftingTables[craftingData.tableType]
-    elseif craftingType == 'point' then
-        extendedCraftingData = Config.CraftingPoints[craftingData.id]
-    else
-        lib.print.error('Invalid craftingType:', craftingType)
+    if not args then lib.print.error('Crafting args is nil') return end
+    
+    local craftingData = lib.callback.await('it-crafting:callback:getDataById', false, craftingType, args.craftId)
+    local recipe = lib.callback.await('it-crafting:callback:getRecipeById', false, craftingType, args.craftId, args.recipeId)
+    if crafting then
+        lib.callback.await('it-crafting:callback:updateUse', false, craftingType, args.craftId, false)
         return
     end
 
@@ -273,6 +243,7 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
 
     if not input then
         ShowNotification(nil, _U('NOTIFICATION__NO__AMOUNT'), 'error')
+        lib.callback.await('it-crafting:callback:updateUse', false, craftingType, args.craftId, false)
         return
     end
 
@@ -280,36 +251,22 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
     local amount = tonumber(input[1])
     for item, itemData in pairs(recipe.ingrediants) do
         if itemData.remove then
-            if not it.hasItem(item, itemData.amount * amount) then
+            if not exports.it_bridge:HasItem(item, itemData.amount * amount) then
                 ShowNotification(nil, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
                 crafting = false
+                lib.callback.await('it-crafting:callback:updateUse', false, craftingType, args.craftId, false)
                 TriggerEvent('it-crafting:client:syncRestLoop', false)
                 return
             end
         else
-            if not it.hasItem(item, itemData.amount) then
+            if not exports.it_bridge:HasItem(item, itemData.amount) then
                 ShowNotification(nil, _U('NOTIFICATION__MISSING__INGIDIANT'), 'error')
                 crafting = false
+                lib.callback.await('it-crafting:callback:updateUse', false, craftingType, args.craftId, false)
                 TriggerEvent('it-crafting:client:syncRestLoop', false)
                 return
             end
         end
-    end
-
-    if extendedCraftingData.restricCrafting['onlyOnePlayer'] then
-        local inUse = lib.callback.await('it-crafting:server:inUse', false, craftingType,  args.craftId)
-        
-        if inUse then
-            ShowNotification(nil, _U('NOTIFICATION__TABLE__IN__USE'), 'error')
-            return
-        end
-    end
-
-    local craftingUpdated = lib.callback.await('it-crafting:server:updateUse', false, craftingType, args.craftId, true)
-
-    if not craftingUpdated then
-        ShowNotification(nil, _U('NOTIFICATION__TABLE__IN__USE'), 'error')
-        return
     end
 
     crafting = true
@@ -335,7 +292,7 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
         for i = 1, amount do
             -- Check if the player can carry then item
             if Config.UseWeightSystem then
-                if not it.canCarryItems(recipe.outputs) then
+                if not exports.it_bridge:CanCarryItems(recipe.outputs) then
                     ShowNotification(nil, _U('NOTIFICATION__CANT__CARRY'), 'error')
                     break
                 end
@@ -344,7 +301,11 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
             local success = lib.skillCheck(recipe.skillCheck.difficulty, recipe.skillCheck.keys)
             if success then
                 ShowNotification(nil, _U('NOTIFICATION__SKILL__SUCCESS'), 'success')
-                TriggerServerEvent('it-crafting:server:craftItem', craftingType, {tableId = args.craftId, recipeId = args.recipeId})
+                local craftSuccess = lib.callback.await('it-crafting:callback:craftItem', false, craftingType, {tableId = args.craftId, recipeId = args.recipeId})
+                if not craftSuccess then
+                    ShowNotification(nil, _U('NOTIFICATION__CRAFT__FAIL'), 'error')
+                    break
+                end
             else
                 ShowNotification(nil, _U('NOTIFICATION__SKILL__ERROR'), 'error')
                 break
@@ -357,7 +318,7 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
     else
         for i = 1, amount do
             if Config.UseWeightSystem then
-                if not it.canCarryItems(recipe.outputs) then
+                if not exports.it_bridge:CanCarryItems(recipe.outputs) then
                     ShowNotification(nil, _U('NOTIFICATION__CANT__CARRY'), 'error')
                     break
                 end
@@ -373,7 +334,11 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
                     combat = true,
                 },
             }) then
-                TriggerServerEvent('it-crafting:server:craftItem', craftingType, {tableId = args.craftId, recipeId = args.recipeId})
+                local craftSuccess = lib.callback.await('it-crafting:callback:craftItem', false, craftingType, {tableId = args.craftId, recipeId = args.recipeId})
+                if not craftSuccess then
+                    ShowNotification(nil, _U('NOTIFICATION__CRAFT__FAIL'), 'error')
+                    break
+                end
             else
                 ShowNotification(nil, _U('NOTIFICATION__CANCELED'), "error")
                 break
@@ -384,7 +349,7 @@ RegisterNetEvent('it-crafting:client:craftItem', function(craftingType, args)
         ClearPedTasks(ped)
         RemoveAnimDict(recipe.animation.dict)
     end
-    local craftingUpdated = lib.callback.await('it-crafting:server:updateUse', false, craftingType, args.craftId, false)
+    lib.callback.await('it-crafting:callback:updateUse', false, craftingType, args.craftId, false)
     if recipe.particlefx then
         if Config.Debug then lib.print.info('Calling ParticleFX Sync [stop]') end
         TriggerServerEvent("it-crafting:server:syncparticlefx", false, craftingData.id, nil, nil)
@@ -394,11 +359,11 @@ end)
 
 RegisterNetEvent('it-crafting:client:removeTable', function(args)
 
-    local tableData = lib.callback.await('it-crafting:server:getDataById', false, 'table', args.tableId)
+    local tableData = lib.callback.await('it-crafting:callback:getDataById', false, 'table', args.tableId)
     local entity = NetworkGetEntityFromNetworkId(tableData.netId)
 
     if Config.UseWeightSystem then
-        if not it.canCarryItem(tableData.tableType, 1) then
+        if not exports.it_bridge:CanCarryItem(tableData.tableType, 1) then
             ShowNotification(nil, _U('NOTIFICATION__CANT__CARRY'), 'error')
             return
         end

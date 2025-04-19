@@ -1,8 +1,9 @@
+math = lib.math
 -- Processing Menu
 RegisterNetEvent('it-crafting:client:showRecipesMenu', function(type, data)
 
     local tableId = data.tableId
-    local recipes = lib.callback.await('it-crafting:server:getRecipes', false, type, tableId)
+    local recipes = lib.callback.await('it-crafting:callback:getRecipes', false, type, tableId)
 
     if not recipes then
         ShowNotification(nil, _U('NOTIFICATION__NO__RECIPES'), 'error')
@@ -28,14 +29,14 @@ RegisterNetEvent('it-crafting:client:showRecipesMenu', function(type, data)
             title = _U('TARGET__TABLE__REMOVE'),
             icon = 'fa-trash',
             onSelect = function(_)
-                lib.callback("it-crafting:server:getDataById", false, function(tableData)
+                lib.callback("it-crafting:callback:getDataById", false, function(tableData)
                     if not tableData then
                         lib.print.error('[it-crafting] Unable to get table data by network id')
                     else
                         local extendedCraftingData = nil
                         extendedCraftingData = Config.CraftingTables[tableData.tableType]
                         if extendedCraftingData.restricCrafting['onlyOwnerRemove'] then
-                            if tableData.owner ~= it.getCitizenId() then
+                            if tableData.owner ~= exports.it_bridge:GetCitizenId() then
                                 ShowNotification(nil, _U('NOTIFICATION__NOT__ALLOWED'), 'error')
                                 return
                             end
@@ -51,6 +52,7 @@ RegisterNetEvent('it-crafting:client:showRecipesMenu', function(type, data)
         id = "it-crafting-recipes-menu",
         title = _U('MENU__CRAFTING__TITLE'),
         onExit = function()
+            if not lib.callback.await('it-crafting:callback:updateUse', false, type, tableId, false) then return end
             TriggerEvent('it-crafting:client:syncRestLoop', false)
         end,
         options = options
@@ -63,7 +65,7 @@ end)
 
 RegisterNetEvent("it-crafting:client:showCraftingMenu", function(type, data)
 
-    local recipe = lib.callback.await('it-crafting:server:getRecipeById', false, type, data.craftId, data.recipeId)
+    local recipe = lib.callback.await('it-crafting:callback:getRecipeById', false, type, data.craftId, data.recipeId)
 
     local options = {}
     if not recipe.showIngrediants then
@@ -78,7 +80,7 @@ RegisterNetEvent("it-crafting:client:showCraftingMenu", function(type, data)
     else
         for k, v in pairs(recipe.ingrediants) do
             table.insert(options, {
-                title = it.getItemLabel(k),
+                title = exports.it_bridge:GetItemLabel(k),
                 description = _U('MENU__INGREDIANT__DESC'):format(v.amount), --:replace("{amount}", v),
                 icon = "flask",
             })
@@ -105,6 +107,7 @@ RegisterNetEvent("it-crafting:client:showCraftingMenu", function(type, data)
             TriggerEvent('it-crafting:client:showRecipesMenu', type, {tableId = data.craftId})
         end,
         onExit = function()
+            if not lib.callback.await('it-crafting:callback:updateUse', false, type, data.craftId, false) then return end
             TriggerEvent('it-crafting:client:syncRestLoop', false)
         end,
     })
@@ -128,7 +131,7 @@ end
 
 RegisterNetEvent('it-crafting:client:showMainAdminMenu', function()
 
-    local allTables = lib.callback.await('it-crafting:server:getTables', false)
+    local allTables = lib.callback.await('it-crafting:callback:getTables', false)
     local tableCount = tablelength(allTables)
 
     lib.registerContext({
@@ -184,7 +187,7 @@ RegisterNetEvent('it-crafting:client:showTableListMenu', function(data)
     for _, v in ipairs(tableList) do
         table.insert(options, {
             title = v.label,
-            description = _U('MENU__DIST'):format(it.round(v.distance, 2)),
+            description = _U('MENU__DIST'):format(math.round(v.distance, 2)),
             icon = "flask-vial",
             arrow = true,
             onSelect = function()

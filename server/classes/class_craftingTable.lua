@@ -18,6 +18,8 @@ function CraftingTable:constructor(id, tableData)
     self.coords = tableData.coords
     ---@type number: The rotation of the processing table
     self.rotation = tableData.rotation
+    ---@type number: The dimension of the processing table
+    self.dimension = tableData.dimension
     ---@type string: The owner of the processing table
     self.owner = tableData.owner
     ---@type string: The type of the processing table
@@ -46,6 +48,8 @@ function CraftingTable:spawn()
     local tableEntity = CreateObjectNoOffset(modelHash, self.coords.x, self.coords.y, self.coords.z, true, true, false)
     Wait(20)
     SetEntityHeading(tableEntity, self.rotation)
+    -- Set Entity Dimension
+    SetEntityRoutingBucket(tableEntity, self.dimension)
     FreezeEntityPosition(tableEntity, true)
 
     self.entity = tableEntity
@@ -85,6 +89,7 @@ function CraftingTable:getData()
         netId = self.netId,
         coords = self.coords,
         rotation = self.rotation,
+        dimension = self.dimension,
         owner = self.owner,
         tableType = self.tableType,
         recipes = self.recipes,

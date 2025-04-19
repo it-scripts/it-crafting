@@ -101,7 +101,7 @@ CreateThread(function()
     end
 
 
-    local tables = lib.callback.await('it-crafting:server:getTables', false)
+    local tables = lib.callback.await('it-crafting:callback:getTables', false)
     for _, tableData in pairs(tables) do
         if not tableBlips[tableData.id] then
         local extendedTableData = Config.CraftingTables[tableData.tableType]
@@ -121,7 +121,7 @@ end)
 
 
 RegisterNetEvent('it-crafting:client:addTableBlip', function(tableType, tableId)
-    local tableData = lib.callback.await('it-crafting:server:getDataById', false, 'table', tableId)
+    local tableData = lib.callback.await('it-crafting:callback:getDataById', false, 'table', tableId)
     if not tableData then
         if Config.Debug then lib.print.error('[it-crafting:client:addTableBlip] - Table data not found') end
         return
@@ -148,7 +148,7 @@ RegisterNetEvent('it-crafting:client:removeTableBlip', function(tableId)
 end)
 
 RegisterNetEvent('it-crafting:client:addAllAdminBlips', function()
-    local allTables = lib.callback.await('it-crafting:server:getTables', false)
+    local allTables = lib.callback.await('it-crafting:callback:getTables', false)
     for _, tableData in pairs(allTables) do
         if tableBlips[tableData.id] then return end
         local extendedTableData = Config.CraftingTables[tableData.tableType]
@@ -180,7 +180,7 @@ RegisterNetEvent('it-crafting:client:addAdminBlip', function(tableId)
         return
     end
     
-    local tableData = lib.callback.await('it-crafting:server:getDataById', false, 'table', tableId)
+    local tableData = lib.callback.await('it-crafting:callback:getDataById', false, 'table', tableId)
     if not tableData then
         if Config.Debug then lib.print.error('[it-crafting:client:addAdminBlip] - Table data not found') end
         return

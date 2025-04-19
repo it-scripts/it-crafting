@@ -1,3 +1,4 @@
+if exports.it_bridge:GetServerInteraction() then return end
 local craftingPoints = {}
 local craftingTables = {}
 local restLoop = false
@@ -45,8 +46,8 @@ end)
 if Config.Target then return end
 CreateThread(function()
 
-    craftingPoints = lib.callback.await('it-crafting:server:getPoints', false)
-    craftingTables = lib.callback.await('it-crafting:server:getTables', false)
+    craftingPoints = lib.callback.await('it-crafting:callback:getPoints', false)
+    craftingTables = lib.callback.await('it-crafting:callback:getTables', false)
 
     while true do
         if not restLoop then
@@ -59,16 +60,28 @@ CreateThread(function()
 
             if tableDistance < pointDistance then
                 if closestTable and tableDistance <= 2.0 then
-                    it.DrawText3D(closestTable.coords.x, closestTable.coords.y, closestTable.coords.z + 0.5, 'Press ~g~E~w~ to interact with table')
+                    DrawText3D(closestTable.coords.x, closestTable.coords.y, closestTable.coords.z + 0.5, 'Press ~g~E~w~ to interact with table')
                     if IsControlJustPressed(0, 38) then
-                        TriggerEvent('it-crafting:client:showRecipesMenu', 'table', {tableId = closestTable.id})
+                        if CheckIfPlayerCanUseTable('table', closestTable.id) then
+                            if Config.UseNewUI then
+                                TriggerEvent('it-crafting:client:showCraftingUI', 'table', {tableId = closestTable.id})
+                            else
+                                TriggerEvent('it-crafting:client:showRecipesMenu', 'table', {tableId = closestTable.id})
+                            end
+                        end
                     end
                 end
             else
                 if closestPoint and pointDistance <= 2.0 then
-                    it.DrawText3D(closestPoint.coords.x, closestPoint.coords.y, closestPoint.coords.z + 0.5, 'Press ~g~E~w~ to interact with point')
+                    DrawText3D(closestPoint.coords.x, closestPoint.coords.y, closestPoint.coords.z + 0.5, 'Press ~g~E~w~ to interact with point')
                     if IsControlJustPressed(0, 38) then
-                        TriggerEvent('it-crafting:client:showRecipesMenu', 'point', {tableId = closestPoint.id})
+                        if CheckIfPlayerCanUseTable('point', closestPoint.id) then
+                            if Config.UseNewUI then
+                                TriggerEvent('it-crafting:client:showCraftingUI', 'point', {tableId = closestPoint.id})
+                            else
+                                TriggerEvent('it-crafting:client:showRecipesMenu', 'point', {tableId = closestPoint.id})
+                            end
+                        end
                     end
                 end
             end
@@ -80,7 +93,7 @@ end)
 CreateThread(function()
     while true do
         Wait(10000)  -- Wait 10 Seconds for refresh Press E and refresh info
-        local newTables = lib.callback.await('it-crafting:server:getTables', false)
+        local newTables = lib.callback.await('it-crafting:callback:getTables', false)
         if newTables then
             craftingTables = newTables
         end

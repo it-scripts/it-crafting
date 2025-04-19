@@ -1,0 +1,130 @@
+.game-container {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    background-color: rgba(38, 38, 38, 0.8);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.game-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #8bc34a;
+}
+
+.progress-bar {
+    height: 6px;
+    width: 100%;
+    background-color: #333;
+    border-radius: 3px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 100%;
+    background-color: #8bc34a;
+    transition: width linear;
+}
+
+.circles-container {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    margin-bottom: 30px;
+}
+
+.circle {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    background-color: #333;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.2s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.circle:hover {
+    transform: scale(1.05);
+}
+
+.circle.correct {
+    background-color: #8bc34a;
+    color: black;
+}
+
+.circle.incorrect {
+    background-color: #f44336;
+    color: white;
+}
+
+.rounds-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.round-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #333;
+}
+
+.round-indicator.win {
+    background-color: #8bc34a;
+}
+
+.round-indicator.lose {
+    background-color: #f44336;
+}
+
+.round-indicator.current {
+    border: 2px solid white;
+}
+
+.game-status {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    min-height: 27px;
+}
+
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #aaa;
+}
+
+@media (max-width: 600px) {
+    .circle {
+        width: 50px;
+        height: 50px;
+        font-size: 18px;
+    }
+
+    .circles-container {
+        height: 250px;
+    }
+}
